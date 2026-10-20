@@ -28,6 +28,24 @@ input,select{font-family:inherit;color:var(--ink)}
 .floathearts{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
 .heart{position:absolute;color:var(--rose);opacity:0;animation:floatUp var(--d,9s) var(--delay,0s) infinite}
 @keyframes floatUp{0%{transform:translateY(20px) scale(.7);opacity:0}15%{opacity:.18}85%{opacity:.18}100%{transform:translateY(-120px) scale(1);opacity:0}}
+
+/* ===== 天气背景动画 ===== */
+.bgfx{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.bgfx .drop{position:absolute;top:-20vh;width:2px;border-radius:2px;background:linear-gradient(180deg,rgba(105,135,200,0),rgba(105,135,200,.82));animation:rainfall linear infinite}
+@keyframes rainfall{0%{transform:translate3d(0,-10vh,0)}100%{transform:translate3d(-7vw,115vh,0)}}
+.bgfx .flake{position:absolute;top:-8vh;border-radius:50%;background:rgba(255,255,255,.95);box-shadow:0 0 7px rgba(255,255,255,.7);animation:snowfall linear infinite}
+@keyframes snowfall{0%{transform:translate3d(0,-10vh,0)}50%{transform:translate3d(4vw,50vh,0)}100%{transform:translate3d(-2vw,110vh,0)}}
+.bgfx .cloud{position:absolute;top:0;border-radius:50%;background:radial-gradient(circle at 40% 55%,rgba(255,255,255,.34),rgba(255,255,255,.10) 60%,transparent 72%);filter:blur(14px);animation:clouddrift linear infinite}
+@keyframes clouddrift{0%{transform:translateX(-35vw)}100%{transform:translateX(120vw)}}
+.bgfx .fogband{position:absolute;left:-25%;right:-25%;height:110px;background:linear-gradient(180deg,transparent,rgba(255,255,255,.22),transparent);filter:blur(22px);animation:fogdrift ease-in-out infinite alternate}
+@keyframes fogdrift{0%{transform:translateX(-6vw)}100%{transform:translateX(6vw)}}
+.bgfx .sun{position:absolute;top:6vh;left:50%;margin-left:-90px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(255,214,140,.55),rgba(255,214,140,.18) 55%,transparent 72%);filter:blur(8px);animation:sunpulse 6s ease-in-out infinite}
+@keyframes sunpulse{0%,100%{opacity:.7;transform:scale(1)}50%{opacity:1;transform:scale(1.06)}}
+.bgfx .mote{position:absolute;bottom:-6vh;width:3px;height:3px;border-radius:50%;background:rgba(255,214,140,.5);animation:motefloat linear infinite}
+@keyframes motefloat{0%{transform:translateY(0);opacity:0}12%{opacity:.6}100%{transform:translateY(-105vh);opacity:0}}
+.bgfx .flash{position:absolute;inset:0;background:rgba(235,240,255,.22);opacity:0;animation:flash 6s linear infinite}
+@keyframes flash{0%,92%,100%{opacity:0}93%{opacity:.8}95%{opacity:0}96%{opacity:.5}97.5%{opacity:0}}
+@media (prefers-reduced-motion:reduce){.bgfx{display:none}}
 .wrap{position:relative;z-index:1;max-width:640px;margin:0 auto;padding:0 20px 60px}
 
 header{display:flex;align-items:center;justify-content:space-between;padding:22px 0 8px}
@@ -135,6 +153,7 @@ footer{text-align:center;padding:36px 0 6px;color:var(--dim);font-size:13px;line
 </head>
 <body>
 
+<div class="bgfx" id="bgfx" aria-hidden="true"></div>
 <div class="floathearts" id="hearts" aria-hidden="true"></div>
 
 <div class="wrap">
@@ -817,8 +836,78 @@ function loadWeather(){
       if(!cw){setWx(city||"","--","天气加载失败","");return}
       var t=Math.round(cw.temperature),tx=wxText(cw.weathercode);
       setWx(city,t,tx,careMsg(cw));
+      renderWeatherFx(cw.weathercode);
     }).catch(function(){setWx("","--","天气加载失败","")});
   },fail,{timeout:8000,maximumAge:600000});
+}
+function renderWeatherFx(code){
+  var fx=$id("bgfx");if(!fx)return;
+  fx.innerHTML="";
+  var type="";
+  if(code===0)type="sun";
+  else if(code<=2)type="cloud-light";
+  else if(code===3)type="cloud-over";
+  else if(code>=45&&code<=48)type="fog";
+  else if(code>=95)type="storm";
+  else if((code>=51&&code<=67)||(code>=80&&code<=82))type="rain";
+  else if((code>=71&&code<=77)||(code>=85&&code<=86))type="snow";
+  if(!type){fx.className="bgfx";return;}
+  fx.className="bgfx "+type;
+  var R=function(a,b){return a+Math.random()*(b-a)},i,el;
+  if(type==="rain"||type==="storm"){
+    var n=window.innerWidth<600?46:70;
+    for(i=0;i<n;i++){
+      el=document.createElement("span");el.className="drop";
+      el.style.left=R(0,100).toFixed(1)+"%";
+      el.style.height=R(38,86).toFixed(0)+"px";
+      el.style.animationDuration=R(.6,1.35).toFixed(2)+"s";
+      el.style.animationDelay=(-R(0,1.35)).toFixed(2)+"s";
+      fx.appendChild(el);
+    }
+  }
+  if(type==="snow"){
+    var m=window.innerWidth<600?34:52;
+    for(i=0;i<m;i++){
+      el=document.createElement("span");el.className="flake";
+      el.style.left=R(0,100).toFixed(1)+"%";
+      var sz=R(4,9).toFixed(1);el.style.width=sz+"px";el.style.height=sz+"px";
+      el.style.animationDuration=R(6,13).toFixed(1)+"s";
+      el.style.animationDelay=(-R(0,13)).toFixed(1)+"s";
+      fx.appendChild(el);
+    }
+  }
+  if(type==="fog"){
+    for(i=0;i<4;i++){
+      el=document.createElement("span");el.className="fogband";
+      el.style.top=R(12,78).toFixed(0)+"vh";
+      el.style.animationDuration=R(26,42).toFixed(0)+"s";
+      fx.appendChild(el);
+    }
+  }
+  if(type==="cloud-light"||type==="cloud-over"){
+    var k=type==="cloud-over"?6:3;
+    for(i=0;i<k;i++){
+      el=document.createElement("span");el.className="cloud";
+      var w=R(120,240).toFixed(0);el.style.width=w+"px";el.style.height=R(50,90).toFixed(0)+"px";
+      el.style.top=R(4,46).toFixed(0)+"vh";
+      el.style.animationDuration=R(30,52).toFixed(0)+"s";
+      el.style.animationDelay=(-R(0,52)).toFixed(0)+"s";
+      fx.appendChild(el);
+    }
+  }
+  if(type==="sun"){
+    el=document.createElement("span");el.className="sun";fx.appendChild(el);
+    for(i=0;i<7;i++){
+      el=document.createElement("span");el.className="mote";
+      el.style.left=R(8,92).toFixed(1)+"%";
+      el.style.animationDuration=R(9,16).toFixed(1)+"s";
+      el.style.animationDelay=(-R(0,16)).toFixed(1)+"s";
+      fx.appendChild(el);
+    }
+  }
+  if(type==="storm"){
+    el=document.createElement("span");el.className="flash";fx.appendChild(el);
+  }
 }
 function setDate(){var now=new Date(),days=["日","一","二","三","四","五","六"],s=(now.getMonth()+1)+"月"+now.getDate()+"日 · 周"+days[now.getDay()];var wd=$id("wxDate");if(wd)wd.textContent=s;}
 function makeHearts(){
