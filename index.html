@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>今天抽一张 · 宝宝想我了吗</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 29s-9-5.5-12-12C2 12 6 6 11 6c3 0 5 2 5 4 0-2 2-4 5-4 5 0 9 6 7 11-3 6.5-12 12-12 12z' fill='%23ec8aa1'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Noto+Serif+SC:wght@400;600;700;900&family=Noto+Sans+SC:wght@300;400;500;700&display=swap">
+<style>
+:root{
+  --bg1:#fdf6ec;--bg2:#f9ebdd;--card:#fffdf8;--card2:#fff7ec;
+  --amber:#e8a44d;--rose:#ec8aa1;--ink:#5b4638;--muted:#9a8373;--dim:#c0ab98;
+  --line:rgba(91,70,56,0.14);
+  --c1:#c19a5a;--c2:#ec8a5e;--c3:#e0a047;--c4:#e87c93;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{font-family:"Noto Sans SC",system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;
+  background:
+    radial-gradient(900px 520px at 88% -8%, rgba(236,138,161,.20), transparent 60%),
+    radial-gradient(820px 480px at -8% 28%, rgba(232,164,77,.16), transparent 55%),
+    linear-gradient(180deg,var(--bg1),var(--bg2));
+  color:var(--ink);min-height:100vh;line-height:1.6;overflow-x:hidden}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input,select{font-family:inherit;color:var(--ink)}
+.serif{font-family:"Noto Serif SC",serif}
+
+.floathearts{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.heart{position:absolute;color:var(--rose);opacity:0;animation:floatUp var(--d,9s) var(--delay,0s) infinite}
+@keyframes floatUp{0%{transform:translateY(20px) scale(.7);opacity:0}15%{opacity:.18}85%{opacity:.18}100%{transform:translateY(-120px) scale(1);opacity:0}}
+.wrap{position:relative;z-index:1;max-width:640px;margin:0 auto;padding:0 20px 60px}
+
+header{display:flex;align-items:center;justify-content:space-between;padding:22px 0 8px}
+.brand{display:flex;align-items:center;gap:10px}
+.brand .dot{width:12px;height:12px;border-radius:50%;background:var(--rose);box-shadow:0 0 14px var(--rose)}
+.brand b{font-weight:600;letter-spacing:.4px}
+.date{font-size:13px;color:var(--muted)}
+
+.hero{padding:30px 0 6px;text-align:center}
+.eyebrow{display:inline-block;font-size:12px;letter-spacing:3px;color:var(--rose);border:1px solid var(--line);padding:5px 14px;border-radius:999px;margin-bottom:16px}
+.hero h1{font-size:38px;font-weight:900;line-height:1.25;letter-spacing:1px}
+.hero h1 .accent{color:var(--rose)}
+.hero .sub{margin:12px auto 14px;color:var(--muted);font-size:14px;max-width:360px}
+.wxcard{margin:18px 0 8px;text-align:center;background:linear-gradient(170deg,rgba(236,138,161,.12),rgba(232,164,77,.10));border:1px solid var(--line);border-radius:18px;padding:16px 16px 14px}
+.wx-head{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:4px}
+.wx-big{display:flex;align-items:baseline;justify-content:center;gap:7px}
+.wx-temp{font-family:"Noto Serif SC",serif;font-size:44px;font-weight:900;color:var(--ink);line-height:1.1}
+.wx-unit{font-size:20px;color:var(--muted)}
+.wx-desc{font-size:16px;color:var(--rose);font-weight:600}
+.wx-care{margin-top:12px;font-size:13px;color:var(--ink);background:var(--card);border:1px dashed var(--rose);border-radius:12px;padding:9px 12px}
+
+.modes{display:flex;gap:10px;justify-content:center;margin-bottom:6px;flex-wrap:wrap}
+.modebtn{min-height:44px;padding:0 20px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--muted);font-size:13.5px;font-weight:600;transition:.18s}
+.modebtn.on{background:var(--rose);color:#fff;border-color:var(--rose)}
+.streak{text-align:center;margin:16px 0 2px;font-size:13px;color:var(--muted)}
+.streak b{color:var(--rose);font-weight:700}
+.turn{text-align:center;font-size:13px;color:var(--rose);margin:8px 0 0;min-height:20px}
+
+.play{margin:20px 0 4px;text-align:center}
+.rarity{display:inline-flex;align-items:center;gap:6px;font-size:12px;padding:5px 14px;border-radius:999px;border:1px solid var(--line);color:var(--muted);background:var(--card);margin-bottom:14px}
+.rarity .swatch{width:8px;height:8px;border-radius:50%;background:var(--r,#e0a047)}
+.rarity.hot{color:var(--ink);border-color:var(--r,#e0a047);background:var(--card)}
+.cardstage{perspective:1100px;width:min(330px,86vw);margin:0 auto;aspect-ratio:3/4}
+.card{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .7s cubic-bezier(.2,.75,.25,1);cursor:pointer;-webkit-tap-highlight-color:transparent}
+.card.flip{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;box-shadow:0 16px 40px rgba(155,110,70,.18)}
+.face.back{background:linear-gradient(160deg,#f3c493,#f0d9b4);z-index:2}
+.face.back .lbl{font-family:"Noto Serif SC",serif;font-size:26px;font-weight:700;color:#8a5a34;letter-spacing:4px}
+.face.back .sub{font-size:12px;color:#a9774b;margin-top:12px}
+.face.front{transform:rotateY(180deg);background:linear-gradient(170deg,var(--card2),var(--card));z-index:1}
+.face.front::before{content:"";position:absolute;inset:0 0 auto;height:5px;border-radius:20px 20px 0 0;background:var(--fc,#e0a047)}
+.face.front .cat{font-size:12px;letter-spacing:2px;color:var(--fc,#e0a047);margin-bottom:12px;font-weight:700}
+.face.front .word{font-family:"Noto Serif SC",serif;font-size:19px;font-weight:600;line-height:1.75;max-width:250px}
+.face.front .tag{font-size:11px;color:var(--muted);margin-top:16px;max-width:240px}
+
+.play-actions{display:flex;gap:12px;justify-content:center;margin-top:20px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:50px;padding:0 26px;border-radius:999px;font-size:15px;font-weight:600;transition:transform .15s,box-shadow .15s;-webkit-tap-highlight-color:transparent}
+.btn:active{transform:scale(.97)}
+.btn-primary{background:var(--rose);color:#fff;box-shadow:0 8px 24px rgba(236,138,161,.32)}
+.btn:disabled{opacity:.5;cursor:default}
+.under-hint{margin-top:14px;font-size:12px;color:var(--dim);text-align:center}
+
+/* 写一张卡 */
+.write{margin:26px 0 4px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px}
+.write .w-title{font-size:14px;font-weight:700;margin-bottom:12px}
+.write .w-row{display:flex;gap:10px;flex-wrap:wrap}
+.write input{flex:1 1 100%;min-height:46px;padding:0 14px;border-radius:12px;border:1px solid var(--line);background:var(--card2);font-size:16px;outline:none}
+.write input::placeholder{color:var(--dim)}
+.write input:focus{border-color:var(--rose)}
+.write select{min-height:46px;padding:0 12px;border-radius:12px;border:1px solid var(--line);background:var(--card2);font-size:14px;outline:none}
+.write .w-btn{min-height:46px;padding:0 16px;border-radius:12px;background:var(--rose);color:#fff;font-weight:600;font-size:14px}
+.write .w-hint{margin-top:8px;font-size:11px;color:var(--dim)}
+
+/* 图鉴 */
+.section{margin:30px 0 6px}
+.section-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:6px}
+.section-head h2{font-size:19px;font-weight:700;letter-spacing:.5px}
+.section-head .hint{font-size:12px;color:var(--dim)}
+.gal-empty{color:var(--muted);text-align:center;font-size:14px;padding:24px 0;border:1px dashed var(--line);border-radius:16px}
+.gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.gcard{aspect-ratio:3/4;border-radius:14px;padding:12px;display:flex;flex-direction:column;justify-content:space-between;
+  border:1px solid var(--line);background:var(--card);position:relative;overflow:hidden}
+.gcard::before{content:"";position:absolute;inset:0 0 auto;height:3px;background:var(--c,#c19a5a)}
+.gcard .gt{font-size:11px;color:var(--c,#c19a5a);font-weight:700}
+.gcard .gn{font-size:11px;color:var(--ink);line-height:1.55;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.gcard .gd{font-size:10px;color:var(--dim);margin-top:auto;padding-top:6px}
+footer{text-align:center;padding:36px 0 6px;color:var(--dim);font-size:13px;line-height:2}
+
+.toast{position:fixed;left:50%;bottom:34px;transform:translate(-50%,20px);background:#fff;border:1px solid var(--line);color:var(--ink);padding:12px 22px;border-radius:999px;font-size:14px;opacity:0;pointer-events:none;transition:.3s;z-index:9;box-shadow:0 8px 24px rgba(0,0,0,.12)}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+@media (min-width:768px){
+  .hero h1{font-size:48px}
+  .hero .sub{max-width:420px}
+  .gallery{grid-template-columns:repeat(4,1fr)}
+  .write input{flex:1 1 60%}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="floathearts" id="hearts" aria-hidden="true"></div>
+
+<div class="wrap">
+
+  <!-- ===== 天气（最先展示） ===== -->
+  <section class="wxcard">
+    <div class="wx-head"><span id="wxCity">正在定位…</span><span id="wxDate"></span></div>
+    <div class="wx-big">
+      <span class="wx-temp" id="wxTemp">--</span><span class="wx-unit">℃</span>
+      <span class="wx-desc" id="wxDesc">加载中</span>
+    </div>
+    <div class="wx-care" id="wxCare">正在分析今天的天气…</div>
+  </section>
+
+  <header>
+    <div class="brand"><span class="dot"></span><b>今天抽一张</b></div>
+    <div class="date" id="date"></div>
+  </header>
+
+  <section class="hero">
+    <span class="eyebrow">给你的晚安小惊喜</span>
+    <h1 class="serif">宝宝，今天<br>想我<span class="accent">了吗</span>？</h1>
+    <p class="sub">抽一张卡吧，让今天多一份想你的证据。内置 500 张，365 天不重样。</p>
+    <div class="modes" id="modes"></div>
+    <div class="streak" id="streak">想你已经连续 <b>0</b> 天</div>
+  </section>
+
+  <section class="play">
+    <div class="rarity" id="rarityTag"><span class="swatch"></span><span id="rarityText">还没抽卡</span></div>
+    <div class="turn" id="turn"></div>
+
+    <div class="cardstage" id="cardstage">
+      <div class="card" id="card">
+        <div class="face back" id="cardBack">
+          <svg viewBox="0 0 48 48" width="46" height="46" fill="none" stroke="#a9774b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M24 44s-13-8-18-17C3 20 8 11 15 11c5 0 9 3 9 6 0-3 4-6 9-6 7 0 12 9 10 16-5 9-18 17-18 17z"/><path d="M24 17l3.5 7 7.5 1-5.5 5.5 1.5 7.5-7-3.5-7 3.5 1.5-7.5L13 25l7.5-1z" opacity=".5"/></svg>
+          <div class="lbl">抽 一 张</div>
+          <div class="sub">点一下卡片，翻翻今天的运气</div>
+        </div>
+        <div class="face front" id="cardFront">
+          <div class="cat" id="cCat">情话</div>
+          <div class="word" id="cWord"></div>
+          <div class="tag" id="cHint">翻开啦 · 今天就由它做主</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="play-actions">
+      <button class="btn btn-primary" id="drawBtn" type="button">抽一张</button>
+    </div>
+    <div class="under-hint">已翻开的卡不会重复出现，陪你翻满一整年</div>
+  </section>
+
+  <!-- ===== 写一张卡 ===== -->
+  <section class="write">
+    <div class="w-title">写一张卡，填进卡册</div>
+    <div class="w-row">
+      <input id="wText" placeholder="写下你想给她的惊喜或情话" maxlength="60">
+      <select id="wCat" aria-label="分类"></select>
+      <select id="wRar" aria-label="稀有度"></select>
+      <button class="w-btn" id="wAdd" type="button">写进卡册</button>
+    </div>
+    <div class="w-hint">自定义卡会和内置卡一起抽，同样不重复</div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <h2>想你的小卡册</h2>
+      <span class="hint" id="galCount">0 / 500</span>
+    </div>
+    <div class="gal-empty" id="galEmpty">还没有翻开的卡片，抽一张，它就会住进这里。</div>
+    <div class="gallery" id="gallery"></div>
+  </section>
+
+  <footer>愿每一天，都有一份想你的小惊喜值得期待。<br>给你的宝宝 —— 一张永远翻不完的卡</footer>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+"use strict";
+var LS_COL="wanwan_draw_col_v1";
+var LS_STREAK="wanwan_draw_streak_v1";
+var LS_CUSTOM="wanwan_custom_v1";
+
+var CAT_NAMES=["情话","哄睡卡","小惊喜","夸夸卡","约会任务","打卡小习惯","双人默契","专属回忆卡","心愿卡"];
+var RARE_NAME={1:"普通",2:"稀有",3:"史诗",4:"传说"};
+var RARE_COLOR={1:"#c19a5a",2:"#ec8a5e",3:"#e0a047",4:"#e87c93"};
+var WEIGHT=[18,30,32,20]; // r1:r2:r3:r4
+
+/* 内置 500 张（含影视/古诗/名著名句情话） */
+var POOL=[
+  {cat:"情话",r:1,duo:false,src:"电影《大话西游》",txt:"如果非要给这份爱加上一个期限，我希望是一万年。"},
+  {cat:"情话",r:1,duo:false,src:"电影《情书》",txt:"你好吗？我很好。"},
+  {cat:"情话",r:1,duo:false,src:"电影《怦然心动》",txt:"斯人若彩虹，遇上方知有。"},
+  {cat:"情话",r:1,duo:false,src:"电影《泰坦尼克号》",txt:"你跳，我也跳。"},
+  {cat:"情话",r:1,duo:false,src:"秦观《鹊桥仙》",txt:"两情若是久长时，又岂在朝朝暮暮。"},
+  {cat:"情话",r:1,duo:false,src:"王维《相思》",txt:"红豆生南国，春来发几枝。愿君多采撷，此物最相思。"},
+  {cat:"情话",r:1,duo:false,src:"李清照《一剪梅》",txt:"一种相思，两处闲愁。"},
+  {cat:"情话",r:1,duo:false,src:"李商隐《无题》",txt:"春蚕到死丝方尽，蜡炬成灰泪始干。"},
+  {cat:"情话",r:1,duo:false,src:"李商隐《无题》",txt:"身无彩凤双飞翼，心有灵犀一点通。"},
+  {cat:"情话",r:1,duo:false,src:"元稹《离思》",txt:"曾经沧海难为水，除却巫山不是云。"},
+  {cat:"情话",r:1,duo:false,src:"白居易《长恨歌》",txt:"在天愿作比翼鸟，在地愿为连理枝。"},
+  {cat:"情话",r:1,duo:false,src:"温庭筠《南歌子》",txt:"玲珑骰子安红豆，入骨相思知不知。"},
+  {cat:"情话",r:1,duo:false,src:"苏轼《江城子》",txt:"十年生死两茫茫，不思量，自难忘。"},
+  {cat:"情话",r:1,duo:false,src:"柳永《雨霖铃》",txt:"此去经年，应是良辰好景虚设。"},
+  {cat:"情话",r:1,duo:false,src:"《诗经·击鼓》",txt:"执子之手，与子偕老。"},
+  {cat:"情话",r:1,duo:false,src:"卓文君《白头吟》",txt:"愿得一心人，白头不相离。"},
+  {cat:"情话",r:1,duo:false,src:"纳兰性德《木兰花》",txt:"人生若只如初见，何事秋风悲画扇。"},
+  {cat:"情话",r:1,duo:false,src:"范成大《车遥遥篇》",txt:"愿我如星君如月，夜夜流光相皎洁。"},
+  {cat:"情话",r:1,duo:false,src:"辛弃疾《青玉案》",txt:"蓦然回首，那人却在灯火阑珊处。"},
+  {cat:"情话",r:1,duo:false,src:"汉乐府《上邪》",txt:"山无陵，江水为竭，乃敢与君绝。"},
+  {cat:"情话",r:1,duo:false,src:"李之仪《卜算子》",txt:"只愿君心似我心，定不负相思意。"},
+  {cat:"情话",r:1,duo:false,src:"晏殊《蝶恋花》",txt:"天涯地角有穷时，只有相思无尽处。"},
+  {cat:"情话",r:1,duo:false,src:"《诗经·采葛》",txt:"一日不见，如三秋兮。"},
+  {cat:"情话",r:1,duo:false,src:"柳永《蝶恋花》",txt:"衣带渐宽终不悔，为伊消得人憔悴。"},
+  {cat:"情话",r:1,duo:false,src:"张先《千秋岁》",txt:"心似双丝网，中有千千结。"},
+  {cat:"情话",r:1,duo:false,src:"徐再思《折桂令》",txt:"平生不会相思，才会相思，便害相思。"},
+  {cat:"情话",r:1,duo:false,src:"杜甫《月夜》",txt:"何时倚虚幌，双照泪痕干。"},
+  {cat:"情话",r:1,duo:false,src:"李白《三五七言》",txt:"相思相见知何日？此时此夜难为情。"},
+  {cat:"情话",r:1,duo:false,src:"沈从文致张兆和",txt:"我行过许多地方的桥，看过许多次数的云，喝过许多种类的酒，却只爱过一个正当最好年龄的人。"},
+  {cat:"情话",r:1,duo:false,src:"王小波《爱你就像爱生命》",txt:"一想到你呀，我这张丑脸上就泛起微笑。"},
+  {cat:"情话",r:1,duo:false,src:"张爱玲《爱》",txt:"于千万人之中，遇见你要遇见的人。"},
+  {cat:"情话",r:1,duo:false,src:"朱生豪致宋清如",txt:"醒来觉得甚是爱你。"},
+  {cat:"哄睡卡",r:2,duo:false,txt:"把今天的烦恼都关进梦里，好好睡。"},
+  {cat:"哄睡卡",r:2,duo:false,txt:"盖好被子，别让夜风偷走你的暖。"},
+  {cat:"哄睡卡",r:2,duo:false,txt:"闭上眼睛，我在这里陪你数到一百。"},
+  {cat:"哄睡卡",r:2,duo:false,txt:"晚安，月亮替我看护你的梦。"},
+  {cat:"哄睡卡",r:2,duo:false,txt:"你睡着的样子，一定特别可爱。"},
+  {cat:"哄睡卡",r:2,duo:false,txt:"累了一天，把自己交给我守夜。"},
+  {cat:"哄睡卡",r:2,duo:false,txt:"梦见我的话，记得醒来告诉我。"},
+  {cat:"哄睡卡",r:2,duo:false,txt:"睡吧，明天的我会更想你。"},
+  {cat:"哄睡卡",r:2,duo:false,txt:"枕头软一点，梦就更甜一点。"},
+  {cat:"哄睡卡",r:2,duo:false,txt:"我把想念调成静音，放在你枕边。"},
+  {cat:"哄睡卡",r:2,duo:false,txt:"晚风替我吻了你的额头，晚安。"},
+  {cat:"哄睡卡",r:2,duo:false,txt:"数绵羊不如数想你，越数越睡不着。"},
+  {cat:"哄睡卡",r:2,duo:false,txt:"你的睫毛合上时，全世界都安静了。"},
+  {cat:"哄睡卡",r:2,duo:false,txt:"安心睡，你那边我在，我这边想你。"},
+  {cat:"哄睡卡",r:2,duo:false,txt:"睡前最温柔的仪式，是跟你说晚安。"},
+  {cat:"哄睡卡",r:2,duo:false,txt:"把手机放远，把我的心放近。"},
+  {cat:"哄睡卡",r:2,duo:false,txt:"今夜无梦最好，因为现实里我正想你。"},
+  {cat:"哄睡卡",r:2,duo:false,txt:"睡意来的时候，别抵抗，我接住你。"},
+  {cat:"哄睡卡",r:2,duo:false,txt:"隔着屏幕，也在守护你的睡眠。"},
+  {cat:"哄睡卡",r:2,duo:false,txt:"晚安，梦里我们就不算异地了。"},
+  {cat:"哄睡卡",r:2,duo:false,txt:"被子暖不暖？不行我远程加热。"},
+  {cat:"哄睡卡",r:2,duo:false,txt:"你合眼的那一刻，我也开始想你。"},
+  {cat:"哄睡卡",r:2,duo:false,txt:"睡个好觉，是今晚对你最大的愿望。"},
+  {cat:"哄睡卡",r:2,duo:false,txt:"疲惫都卸下吧，你值得一夜安眠。"},
+  {cat:"哄睡卡",r:2,duo:false,txt:"星星眨眼，提醒你该睡了。"},
+  {cat:"哄睡卡",r:2,duo:false,txt:"明天再聊，今晚先交给梦。"},
+  {cat:"哄睡卡",r:2,duo:false,txt:"你在远方，也在我的枕边。"},
+  {cat:"哄睡卡",r:2,duo:false,txt:"关灯，拉上窗帘，进入我的想念。"},
+  {cat:"哄睡卡",r:2,duo:false,txt:"你的呼吸声，是我最想听的安眠曲。"},
+  {cat:"哄睡卡",r:2,duo:false,txt:"晚安，这一句是认真盖章的。"},
+  {cat:"哄睡卡",r:2,duo:false,txt:"把今天的不开心，退还给今天。"},
+  {cat:"哄睡卡",r:2,duo:false,txt:"睡眼朦胧时，我正轻轻说想你。"},
+  {cat:"哄睡卡",r:2,duo:false,txt:"再坚强的你也需要一夜好眠。"},
+  {cat:"哄睡卡",r:2,duo:false,txt:"愿你的梦有糖，醒来有笑。"},
+  {cat:"哄睡卡",r:2,duo:false,txt:"被子裹紧一点，心就暖一点。"},
+  {cat:"哄睡卡",r:2,duo:false,txt:"我在，安心睡，什么都不用怕。"},
+  {cat:"哄睡卡",r:2,duo:false,txt:"睡醒的第一眼，想看到你。"},
+  {cat:"哄睡卡",r:2,duo:false,txt:"夜深了，把世界调成静音。"},
+  {cat:"哄睡卡",r:2,duo:false,txt:"你的晚安，是我一天最甜的句号。"},
+  {cat:"哄睡卡",r:2,duo:false,txt:"放下手机，也放下这一天的疲惫。"},
+  {cat:"哄睡卡",r:2,duo:false,txt:"窗外有风，我心里有你。"},
+  {cat:"哄睡卡",r:2,duo:false,txt:"好梦要轻拿轻放，别吵醒你。"},
+  {cat:"哄睡卡",r:2,duo:false,txt:"闭上眼睛，余下的交给我。"},
+  {cat:"哄睡卡",r:2,duo:false,txt:"今晚的月亮也想你，早点睡。"},
+  {cat:"哄睡卡",r:2,duo:false,txt:"睡眠是最好的美容，也是我的挂念。"},
+  {cat:"哄睡卡",r:2,duo:false,txt:"晚安，愿你梦里有我，醒来更甜。"},
+  {cat:"哄睡卡",r:2,duo:false,txt:"你好好休息，就是对我最好的回应。"},
+  {cat:"哄睡卡",r:2,duo:false,txt:"夜空里每一颗星，都替你眨眼睛。"},
+  {cat:"哄睡卡",r:2,duo:false,txt:"睡吧，明早我一睁眼就在找你。"},
+  {cat:"哄睡卡",r:2,duo:false,txt:"把想念折成枕头，垫在你颈下。"},
+  {cat:"哄睡卡",r:2,duo:false,txt:"累的时候，连梦都该温柔点。"},
+  {cat:"哄睡卡",r:2,duo:false,txt:"晚安，愿你的被窝永远暖洋洋。"},
+  {cat:"哄睡卡",r:2,duo:false,txt:"我在数你今晚会做的梦。"},
+  {cat:"哄睡卡",r:2,duo:false,txt:"合眼即是相遇，梦里见。"},
+  {cat:"哄睡卡",r:2,duo:false,txt:"愿你睡得像一只安心的小猫。"},
+  {cat:"哄睡卡",r:2,duo:false,txt:"夜风再凉，也有我的想念挡着。"},
+  {cat:"哄睡卡",r:2,duo:false,txt:"晚安，明天见的人里有你。"},
+  {cat:"哄睡卡",r:2,duo:false,txt:"睡前一分钟，只想你。"},
+  {cat:"哄睡卡",r:2,duo:false,txt:"你的睡眠质量，等于我的安心指数。"},
+  {cat:"哄睡卡",r:2,duo:false,txt:"把烦恼还给白天，把温柔留给今晚。"},
+  {cat:"哄睡卡",r:2,duo:false,txt:"星星都睡了，你也该睡了。"},
+  {cat:"哄睡卡",r:2,duo:false,txt:"晚安，愿你一夜无扰，好梦绵长。"},
+  {cat:"哄睡卡",r:2,duo:false,txt:"我这边夜深了，你那边记得早点休息。"},
+  {cat:"哄睡卡",r:2,duo:false,txt:"睡醒记得给我报平安。"},
+  {cat:"哄睡卡",r:2,duo:false,txt:"你睡着的夜晚，我也睡得很踏实。"},
+  {cat:"哄睡卡",r:2,duo:false,txt:"晚安，这一句送给全世界最可爱的你。"},
+  {cat:"小惊喜",r:2,duo:false,txt:"点一杯你最爱的奶茶，送到你手边。"},
+  {cat:"小惊喜",r:2,duo:false,txt:"下单一份零食礼包，替我抱抱你。"},
+  {cat:"小惊喜",r:2,duo:false,txt:"订一份应季水果，今天补点糖分。"},
+  {cat:"小惊喜",r:2,duo:false,txt:"挑一份小礼物寄到你家，等你拆。"},
+  {cat:"小惊喜",r:2,duo:false,txt:"这个月饮品基金我承包。"},
+  {cat:"小惊喜",r:2,duo:false,txt:"购物车里的东西，挑一件我买单。"},
+  {cat:"小惊喜",r:2,duo:false,txt:"给你点一份甜品，甜过今天。"},
+  {cat:"小惊喜",r:2,duo:false,txt:"安排一束花送到你家门口。"},
+  {cat:"小惊喜",r:2,duo:false,txt:"寄一盒你爱吃的点心过去。"},
+  {cat:"小惊喜",r:2,duo:false,txt:"给你充一个月会员，追剧无忧。"},
+  {cat:"小惊喜",r:2,duo:false,txt:"送一只可爱的玩偶陪你睡觉。"},
+  {cat:"小惊喜",r:2,duo:false,txt:"给你点一杯热可可暖暖手。"},
+  {cat:"小惊喜",r:2,duo:false,txt:"订一份你爱的外卖犒劳你。"},
+  {cat:"小惊喜",r:2,duo:false,txt:"送你一张线上电影的观影券。"},
+  {cat:"小惊喜",r:2,duo:false,txt:"给你买一本想看的书。"},
+  {cat:"小惊喜",r:2,duo:false,txt:"安排一杯秋天的第一杯奶茶。"},
+  {cat:"小惊喜",r:2,duo:false,txt:"送你一套暖手宝，冬天不冷手。"},
+  {cat:"小惊喜",r:2,duo:false,txt:"给你点一杯蜂蜜柚子，润润嗓。"},
+  {cat:"小惊喜",r:2,duo:false,txt:"寄一箱你爱的果汁过去。"},
+  {cat:"小惊喜",r:2,duo:false,txt:"送你一个可爱的手机壳。"},
+  {cat:"小惊喜",r:2,duo:false,txt:"给你点一份披萨当夜宵。"},
+  {cat:"小惊喜",r:2,duo:false,txt:"安排一次美甲小补贴。"},
+  {cat:"小惊喜",r:2,duo:false,txt:"送你一双保暖的袜子手套。"},
+  {cat:"小惊喜",r:2,duo:false,txt:"给你买一只好看的杯子。"},
+  {cat:"小惊喜",r:2,duo:false,txt:"订一束向日葵，晒晒你的心情。"},
+  {cat:"小惊喜",r:2,duo:false,txt:"送你一张游戏皮肤券。"},
+  {cat:"小惊喜",r:2,duo:false,txt:"给你点一份你最爱的汉堡。"},
+  {cat:"小惊喜",r:2,duo:false,txt:"寄一份自热火锅，解解馋。"},
+  {cat:"小惊喜",r:2,duo:false,txt:"送你一个香薰，让房间好闻。"},
+  {cat:"小惊喜",r:2,duo:false,txt:"安排一杯冰美式，提提神。"},
+  {cat:"小惊喜",r:2,duo:false,txt:"给你充个话费，怕你联系不上我。"},
+  {cat:"小惊喜",r:2,duo:false,txt:"送一只暖水袋，捂热你的被窝。"},
+  {cat:"小惊喜",r:2,duo:false,txt:"给你点一份水果捞，清爽一下。"},
+  {cat:"小惊喜",r:2,duo:false,txt:"送你一盒好吃的曲奇。"},
+  {cat:"小惊喜",r:2,duo:false,txt:"安排一支你爱用的护手霜。"},
+  {cat:"小惊喜",r:2,duo:false,txt:"给你订一份蛋糕券备用。"},
+  {cat:"小惊喜",r:2,duo:false,txt:"送你一张云端的抱抱券。"},
+  {cat:"小惊喜",r:2,duo:false,txt:"给你点一份关东煮，暖胃。"},
+  {cat:"小惊喜",r:2,duo:false,txt:"寄一份家乡味的小吃过去。"},
+  {cat:"小惊喜",r:2,duo:false,txt:"送你一个可爱的发绳。"},
+  {cat:"小惊喜",r:2,duo:false,txt:"给你充一个视频会员。"},
+  {cat:"小惊喜",r:2,duo:false,txt:"安排一次颈枕小礼。"},
+  {cat:"小惊喜",r:2,duo:false,txt:"送你一把漂亮的雨伞。"},
+  {cat:"小惊喜",r:2,duo:false,txt:"给你点一份热汤面。"},
+  {cat:"小惊喜",r:2,duo:false,txt:"寄一包你爱的小零食盲盒。"},
+  {cat:"小惊喜",r:2,duo:false,txt:"送你一本手账，记录我们的日子。"},
+  {cat:"小惊喜",r:2,duo:false,txt:"给你买一盆好养的小绿植。"},
+  {cat:"小惊喜",r:2,duo:false,txt:"安排一杯咖啡，陪你加班。"},
+  {cat:"小惊喜",r:2,duo:false,txt:"送你一只暖手鼠标垫。"},
+  {cat:"小惊喜",r:2,duo:false,txt:"给你点一份芒果甜品。"},
+  {cat:"小惊喜",r:2,duo:false,txt:"寄一份快乐水，不快乐也快乐。"},
+  {cat:"小惊喜",r:2,duo:false,txt:"送你一个星空灯，照亮你的夜。"},
+  {cat:"小惊喜",r:2,duo:false,txt:"给你充一个月音乐会员。"},
+  {cat:"小惊喜",r:2,duo:false,txt:"安排一次代金券，想买就买。"},
+  {cat:"小惊喜",r:2,duo:false,txt:"送你一只可爱的钥匙扣。"},
+  {cat:"小惊喜",r:2,duo:false,txt:"给你点一份烤串，解解馋。"},
+  {cat:"小惊喜",r:2,duo:false,txt:"寄一条软软的围巾过去。"},
+  {cat:"小惊喜",r:2,duo:false,txt:"送你一盒巧克力，甜到心里。"},
+  {cat:"小惊喜",r:2,duo:false,txt:"给你点一杯奶茶全糖去冰。"},
+  {cat:"小惊喜",r:2,duo:false,txt:"安排一份蛋糕，庆祝今天。"},
+  {cat:"小惊喜",r:2,duo:false,txt:"送你一只睡眠眼罩，睡得更香。"},
+  {cat:"小惊喜",r:2,duo:false,txt:"给你买一件舒服的居家服。"},
+  {cat:"小惊喜",r:2,duo:false,txt:"订一份鸡汤，暖暖你的胃。"},
+  {cat:"小惊喜",r:2,duo:false,txt:"送你一张随叫随到的心动券。"},
+  {cat:"夸夸卡",r:3,duo:false,txt:"你今天说话的声音，特别好听。"},
+  {cat:"夸夸卡",r:3,duo:false,txt:"你笑起来的时候，全世界都亮了。"},
+  {cat:"夸夸卡",r:3,duo:false,txt:"你认真做事的样子，迷住我了。"},
+  {cat:"夸夸卡",r:3,duo:false,txt:"你选东西的眼光，一直在线。"},
+  {cat:"夸夸卡",r:3,duo:false,txt:"你今天穿搭，好看得过分。"},
+  {cat:"夸夸卡",r:3,duo:false,txt:"你耐心哄人的时候，特别温柔。"},
+  {cat:"夸夸卡",r:3,duo:false,txt:"你的记性真好，小事都记得。"},
+  {cat:"夸夸卡",r:3,duo:false,txt:"你点菜的样子很可爱。"},
+  {cat:"夸夸卡",r:3,duo:false,txt:"你坚持小目标的样子，特别棒。"},
+  {cat:"夸夸卡",r:3,duo:false,txt:"你三观正，是我最欣赏的一点。"},
+  {cat:"夸夸卡",r:3,duo:false,txt:"你照顾别人的心，很珍贵。"},
+  {cat:"夸夸卡",r:3,duo:false,txt:"你生气也好看，但还是开心最好。"},
+  {cat:"夸夸卡",r:3,duo:false,txt:"你聪明起来，反应特别快。"},
+  {cat:"夸夸卡",r:3,duo:false,txt:"你柔软又坚强，是我最服气的。"},
+  {cat:"夸夸卡",r:3,duo:false,txt:"你分享日常的碎碎念，我都爱听。"},
+  {cat:"夸夸卡",r:3,duo:false,txt:"你挑的剧，从没让我失望过。"},
+  {cat:"夸夸卡",r:3,duo:false,txt:"你有一双发现美的眼睛。"},
+  {cat:"夸夸卡",r:3,duo:false,txt:"你的善良，是这个世界的加分项。"},
+  {cat:"夸夸卡",r:3,duo:false,txt:"你认真的样子，最打动我。"},
+  {cat:"夸夸卡",r:3,duo:false,txt:"你说话的声音软软的，好听。"},
+  {cat:"夸夸卡",r:3,duo:false,txt:"你对生活的热情，感染到我了。"},
+  {cat:"夸夸卡",r:3,duo:false,txt:"你连发呆的样子都好看。"},
+  {cat:"夸夸卡",r:3,duo:false,txt:"你自律起来，谁也拦不住。"},
+  {cat:"夸夸卡",r:3,duo:false,txt:"你的笑点低，但我最爱看。"},
+  {cat:"夸夸卡",r:3,duo:false,txt:"你记得我们的小约定，我很感动。"},
+  {cat:"夸夸卡",r:3,duo:false,txt:"你的小脾气，我宠得起。"},
+  {cat:"夸夸卡",r:3,duo:false,txt:"你努力向上的样子，特别闪。"},
+  {cat:"夸夸卡",r:3,duo:false,txt:"你给我的安全感，谁也替代不了。"},
+  {cat:"夸夸卡",r:3,duo:false,txt:"你吃东西的样子，最真实最可爱。"},
+  {cat:"夸夸卡",r:3,duo:false,txt:"你的温柔，藏在每一句晚安里。"},
+  {cat:"夸夸卡",r:3,duo:false,txt:"你爱憎分明，我喜欢。"},
+  {cat:"夸夸卡",r:3,duo:false,txt:"你视频里的拥抱，很暖。"},
+  {cat:"夸夸卡",r:3,duo:false,txt:"你总有让我眼前一亮的点子。"},
+  {cat:"夸夸卡",r:3,duo:false,txt:"你对在乎的人，掏心掏肺。"},
+  {cat:"夸夸卡",r:3,duo:false,txt:"你的声音，是我一天里最好听的部分。"},
+  {cat:"夸夸卡",r:3,duo:false,txt:"你不计较的样子，很大气。"},
+  {cat:"夸夸卡",r:3,duo:false,txt:"你低头想事情的样子，很迷人。"},
+  {cat:"夸夸卡",r:3,duo:false,txt:"你懂得体谅我，我记在心里。"},
+  {cat:"夸夸卡",r:3,duo:false,txt:"你笑点不高，但传染力很强。"},
+  {cat:"夸夸卡",r:3,duo:false,txt:"你的审美，我一直很佩服。"},
+  {cat:"夸夸卡",r:3,duo:false,txt:"你认真听我说话的样子，很珍贵。"},
+  {cat:"夸夸卡",r:3,duo:false,txt:"你的周末安排，总是很有意思。"},
+  {cat:"夸夸卡",r:3,duo:false,txt:"你收拾东西很有一套。"},
+  {cat:"夸夸卡",r:3,duo:false,txt:"你给我的称呼，我超喜欢。"},
+  {cat:"夸夸卡",r:3,duo:false,txt:"你温柔又不失主见，很棒。"},
+  {cat:"夸夸卡",r:3,duo:false,txt:"你对我的信任，我很感激。"},
+  {cat:"夸夸卡",r:3,duo:false,txt:"你懂得爱自己，这是最酷的。"},
+  {cat:"夸夸卡",r:3,duo:false,txt:"你随口一句关心，我记一整天。"},
+  {cat:"夸夸卡",r:3,duo:false,txt:"你的小浪漫，常让我惊喜。"},
+  {cat:"夸夸卡",r:3,duo:false,txt:"你大方起来，特别有魅力。"},
+  {cat:"夸夸卡",r:3,duo:false,txt:"你认真规划未来的样子，很帅。"},
+  {cat:"夸夸卡",r:3,duo:false,txt:"你记仇又健忘，很可爱。"},
+  {cat:"夸夸卡",r:3,duo:false,txt:"你的幽默，总踩在我笑点上。"},
+  {cat:"夸夸卡",r:3,duo:false,txt:"你勇敢表达的样子，我很喜欢。"},
+  {cat:"夸夸卡",r:3,duo:false,txt:"你做的每件小事，都很用心。"},
+  {cat:"夸夸卡",r:3,duo:false,txt:"你像个宝藏，越挖越喜欢。"},
+  {cat:"夸夸卡",r:3,duo:false,txt:"你的世界很干净，我很安心。"},
+  {cat:"夸夸卡",r:3,duo:false,txt:"你对未来的期待，让我也想认真。"},
+  {cat:"夸夸卡",r:3,duo:false,txt:"你撒娇的样子，我完全招架不住。"},
+  {cat:"夸夸卡",r:3,duo:false,txt:"你独立又柔软，是稀缺的美好。"},
+  {cat:"夸夸卡",r:3,duo:false,txt:"你的选择，几乎从没错过。"},
+  {cat:"夸夸卡",r:3,duo:false,txt:"你一句话，就能把我哄好。"},
+  {cat:"夸夸卡",r:3,duo:false,txt:"你努力照顾别人时，特别动人。"},
+  {cat:"夸夸卡",r:3,duo:false,txt:"你的品味，就是我的品味。"},
+  {cat:"夸夸卡",r:3,duo:false,txt:"你笑起来的小酒窝，迷人。"},
+  {cat:"夸夸卡",r:3,duo:false,txt:"你值得这世上所有的温柔。"},
+  {cat:"约会任务",r:3,duo:false,txt:"开着视频，一起看今晚的月亮。"},
+  {cat:"约会任务",r:3,duo:false,txt:"同步开一部剧，一起按播放。"},
+  {cat:"约会任务",r:3,duo:false,txt:"语音里给对方读一段喜欢的句子。"},
+  {cat:"约会任务",r:3,duo:false,txt:"打着电话去云散步。"},
+  {cat:"约会任务",r:3,duo:false,txt:"视频一起做一顿同一个锅的夜宵。"},
+  {cat:"约会任务",r:3,duo:false,txt:"一起点同一家店的外卖，云吃饭。"},
+  {cat:"约会任务",r:3,duo:false,txt:"开着视频，各自泡一杯茶。"},
+  {cat:"约会任务",r:3,duo:false,txt:"一起听一张专辑，聊聊感受。"},
+  {cat:"约会任务",r:3,duo:false,txt:"视频里玩猜歌名猜剧名。"},
+  {cat:"约会任务",r:3,duo:false,txt:"一起看一部纪录片，边看边聊。"},
+  {cat:"约会任务",r:3,duo:false,txt:"给对方直播你的窗外。"},
+  {cat:"约会任务",r:3,duo:false,txt:"视频里一起做简单的拉伸。"},
+  {cat:"约会任务",r:3,duo:false,txt:"连线一起追一集综艺。"},
+  {cat:"约会任务",r:3,duo:false,txt:"各自拍一张今天的天空，拼在一起。"},
+  {cat:"约会任务",r:3,duo:false,txt:"视频里一起画对方的头像。"},
+  {cat:"约会任务",r:3,duo:false,txt:"开着视频各自看书，安静陪伴。"},
+  {cat:"约会任务",r:3,duo:false,txt:"一起在线逛同一家网店。"},
+  {cat:"约会任务",r:3,duo:false,txt:"视频里互相教对方一首歌。"},
+  {cat:"约会任务",r:3,duo:false,txt:"连线玩你画我猜。"},
+  {cat:"约会任务",r:3,duo:false,txt:"一起云逛一个博物馆展览。"},
+  {cat:"约会任务",r:3,duo:false,txt:"视频里给对方读睡前故事。"},
+  {cat:"约会任务",r:3,duo:false,txt:"同步健身，互相打气。"},
+  {cat:"约会任务",r:3,duo:false,txt:"一起看一场线上演出。"},
+  {cat:"约会任务",r:3,duo:false,txt:"连线做一道同款小菜。"},
+  {cat:"约会任务",r:3,duo:false,txt:"视频里互相关注对方的一天。"},
+  {cat:"约会任务",r:3,duo:false,txt:"一起制定下周的小目标。"},
+  {cat:"约会任务",r:3,duo:false,txt:"连线各自收拾房间，比谁快。"},
+  {cat:"约会任务",r:3,duo:false,txt:"视频里给对方写一句话。"},
+  {cat:"约会任务",r:3,duo:false,txt:"一起云听雨云看雪。"},
+  {cat:"约会任务",r:3,duo:false,txt:"连线玩真心话大冒险。"},
+  {cat:"约会任务",r:3,duo:false,txt:"视频里互相挑一首歌推荐。"},
+  {cat:"约会任务",r:3,duo:false,txt:"一起规划下一次见面的行程。"},
+  {cat:"约会任务",r:3,duo:false,txt:"连线做手账，记录今天。"},
+  {cat:"约会任务",r:3,duo:false,txt:"视频里给对方比个心。"},
+  {cat:"约会任务",r:3,duo:false,txt:"一起在线选一张情侣头像。"},
+  {cat:"约会任务",r:3,duo:false,txt:"开着视频安静各忙各的，也算陪伴。"},
+  {cat:"约会任务",r:3,duo:false,txt:"连线玩猜猜我在哪。"},
+  {cat:"约会任务",r:3,duo:false,txt:"一起云看日出日落。"},
+  {cat:"约会任务",r:3,duo:false,txt:"视频里互相讲一个童年故事。"},
+  {cat:"约会任务",r:3,duo:false,txt:"一起列出想一起做的事清单。"},
+  {cat:"约会任务",r:3,duo:false,txt:"连线各自冲杯蜂蜜水，敬晚安。"},
+  {cat:"约会任务",r:3,duo:false,txt:"视频里互读对方写的小纸条。"},
+  {cat:"约会任务",r:3,duo:false,txt:"一起在线学习听课。"},
+  {cat:"约会任务",r:3,duo:false,txt:"连线玩成语接龙。"},
+  {cat:"约会任务",r:3,duo:false,txt:"一起在线看一场球赛直播。"},
+  {cat:"约会任务",r:3,duo:false,txt:"视频里互相模仿对方表情包。"},
+  {cat:"约会任务",r:3,duo:false,txt:"一起云点蜡烛许愿。"},
+  {cat:"约会任务",r:3,duo:false,txt:"连线各自哼一段旋律，猜是什么歌。"},
+  {cat:"约会任务",r:3,duo:false,txt:"一起整理手机相册，回忆过去。"},
+  {cat:"约会任务",r:3,duo:false,txt:"视频里给对方看看今天新买的东西。"},
+  {cat:"约会任务",r:3,duo:false,txt:"连线玩三句话猜我在想什么。"},
+  {cat:"约会任务",r:3,duo:false,txt:"一起在线做一次小测评。"},
+  {cat:"约会任务",r:3,duo:false,txt:"开着视频给对方读新闻趣闻。"},
+  {cat:"约会任务",r:3,duo:false,txt:"连线各自泡脚，聊聊天。"},
+  {cat:"约会任务",r:3,duo:false,txt:"一起云看一部老电影。"},
+  {cat:"约会任务",r:3,duo:false,txt:"视频里互相夸一句今天最开心的事。"},
+  {cat:"约会任务",r:3,duo:false,txt:"一起在线挑礼物送给对方。"},
+  {cat:"约会任务",r:3,duo:false,txt:"连线玩我说上句你接下句。"},
+  {cat:"约会任务",r:3,duo:false,txt:"视频里给对方一个晚安拥抱。"},
+  {cat:"打卡小习惯",r:3,duo:false,txt:"今天一起喝水八杯，互相监督。"},
+  {cat:"打卡小习惯",r:3,duo:false,txt:"约定今晚十一点前放下手机睡觉。"},
+  {cat:"打卡小习惯",r:3,duo:false,txt:"一起晨起打卡，道一句早安。"},
+  {cat:"打卡小习惯",r:3,duo:false,txt:"今天一起运动二十分钟。"},
+  {cat:"打卡小习惯",r:3,duo:false,txt:"互相提醒吃水果蔬菜。"},
+  {cat:"打卡小习惯",r:3,duo:false,txt:"一起记录今天一件开心的小事。"},
+  {cat:"打卡小习惯",r:3,duo:false,txt:"睡前互道一句今天辛苦了。"},
+  {cat:"打卡小习惯",r:3,duo:false,txt:"今天给对方拍一张随手日常。"},
+  {cat:"打卡小习惯",r:3,duo:false,txt:"一起早睡打卡，明天精神好。"},
+  {cat:"打卡小习惯",r:3,duo:false,txt:"互相提醒按时吃饭。"},
+  {cat:"打卡小习惯",r:3,duo:false,txt:"一起存见面基金，每人一笔。"},
+  {cat:"打卡小习惯",r:3,duo:false,txt:"今天一起散步三十分钟。"},
+  {cat:"打卡小习惯",r:3,duo:false,txt:"互相监督少熬夜，一起早睡。"},
+  {cat:"打卡小习惯",r:3,duo:false,txt:"一起列今日小目标并完成。"},
+  {cat:"打卡小习惯",r:3,duo:false,txt:"睡前互相道一句晚安。"},
+  {cat:"打卡小习惯",r:3,duo:false,txt:"一起喝水打卡，身体好。"},
+  {cat:"打卡小习惯",r:3,duo:false,txt:"今天互相提醒补点营养。"},
+  {cat:"打卡小习惯",r:3,duo:false,txt:"一起做五分钟深呼吸放松。"},
+  {cat:"打卡小习惯",r:3,duo:false,txt:"互相提醒把手机放远一点。"},
+  {cat:"打卡小习惯",r:3,duo:false,txt:"一起记账，攒见面基金。"},
+  {cat:"打卡小习惯",r:3,duo:false,txt:"今天各自拍一张影子打卡。"},
+  {cat:"打卡小习惯",r:3,duo:false,txt:"一起早起喝一杯温水。"},
+  {cat:"打卡小习惯",r:3,duo:false,txt:"互相监督不吃宵夜。"},
+  {cat:"打卡小习惯",r:3,duo:false,txt:"一起拉伸十分钟。"},
+  {cat:"打卡小习惯",r:3,duo:false,txt:"睡前互相说说今天最累的事。"},
+  {cat:"打卡小习惯",r:3,duo:false,txt:"一起设一个不许内耗的开关。"},
+  {cat:"打卡小习惯",r:3,duo:false,txt:"今天互相提醒防晒保湿。"},
+  {cat:"打卡小习惯",r:3,duo:false,txt:"一起听五分钟轻音乐放松。"},
+  {cat:"打卡小习惯",r:3,duo:false,txt:"互相打卡今日步数。"},
+  {cat:"打卡小习惯",r:3,duo:false,txt:"一起早睡一小时挑战。"},
+  {cat:"打卡小习惯",r:3,duo:false,txt:"今天互相夸一句，充值正能量。"},
+  {cat:"打卡小习惯",r:3,duo:false,txt:"一起记录今天吃了什么。"},
+  {cat:"打卡小习惯",r:3,duo:false,txt:"互相提醒坐直少低头。"},
+  {cat:"打卡小习惯",r:3,duo:false,txt:"一起做一组眼保健操。"},
+  {cat:"打卡小习惯",r:3,duo:false,txt:"睡前互道别想太多。"},
+  {cat:"打卡小习惯",r:3,duo:false,txt:"一起存十块钱进见面基金。"},
+  {cat:"打卡小习惯",r:3,duo:false,txt:"今天互相提醒休息别硬撑。"},
+  {cat:"打卡小习惯",r:3,duo:false,txt:"一起晒太阳十分钟。"},
+  {cat:"打卡小习惯",r:3,duo:false,txt:"互相打卡今日好心情。"},
+  {cat:"打卡小习惯",r:3,duo:false,txt:"一起早睡早起，作息同步。"},
+  {cat:"打卡小习惯",r:3,duo:false,txt:"今天一起少刷短视频半小时。"},
+  {cat:"打卡小习惯",r:3,duo:false,txt:"互相提醒饭后散步。"},
+  {cat:"打卡小习惯",r:3,duo:false,txt:"一起记录一张今天的天空。"},
+  {cat:"打卡小习惯",r:3,duo:false,txt:"睡前互道我爱你。"},
+  {cat:"打卡小习惯",r:3,duo:false,txt:"一起做三分钟冥想。"},
+  {cat:"打卡小习惯",r:3,duo:false,txt:"互相监督按时睡觉不拖沓。"},
+  {cat:"打卡小习惯",r:3,duo:false,txt:"今天一起喝一杯温水再开始。"},
+  {cat:"打卡小习惯",r:3,duo:false,txt:"一起记录今天的三个小确幸。"},
+  {cat:"打卡小习惯",r:3,duo:false,txt:"互相提醒工作学习二十五分钟就休息。"},
+  {cat:"打卡小习惯",r:3,duo:false,txt:"一起做一组护眼动作。"},
+  {cat:"打卡小习惯",r:3,duo:false,txt:"睡前互相说一句辛苦了，我懂你。"},
+  {cat:"打卡小习惯",r:3,duo:false,txt:"一起晨间打卡，元气一天。"},
+  {cat:"打卡小习惯",r:3,duo:false,txt:"今天互相提醒补水补眠。"},
+  {cat:"打卡小习惯",r:3,duo:false,txt:"一起定一个小目标互相鼓励。"},
+  {cat:"打卡小习惯",r:3,duo:false,txt:"睡前互道明天见，在梦里。"},
+  {cat:"打卡小习惯",r:3,duo:false,txt:"一起记录今天的天气和心情。"},
+  {cat:"打卡小习惯",r:3,duo:false,txt:"互相提醒少喝冰的多喝温水。"},
+  {cat:"打卡小习惯",r:3,duo:false,txt:"一起做五分钟肩颈放松。"},
+  {cat:"打卡小习惯",r:3,duo:false,txt:"睡前互道晚安，好梦。"},
+  {cat:"打卡小习惯",r:3,duo:false,txt:"一起打卡今日运动步数达标。"},
+  {cat:"打卡小习惯",r:3,duo:false,txt:"今天互相提醒早睡半小时。"},
+  {cat:"打卡小习惯",r:3,duo:false,txt:"一起列明日待办，早点睡。"},
+  {cat:"打卡小习惯",r:3,duo:false,txt:"互相打卡今天没内耗。"},
+  {cat:"打卡小习惯",r:3,duo:false,txt:"一起记录今天对方让你心动的一瞬间。"},
+  {cat:"双人默契",r:4,duo:true,txt:"视频里互相说一件对方让你心动的小事。"},
+  {cat:"双人默契",r:4,duo:true,txt:"开视频，一起模仿对方口头禅，不许笑。"},
+  {cat:"双人默契",r:4,duo:true,txt:"猜猜对方现在在想什么，猜中有奖。"},
+  {cat:"双人默契",r:4,duo:true,txt:"给对方点一首今天想听的歌，一起听完。"},
+  {cat:"双人默契",r:4,duo:true,txt:"用三句话，把今天最开心的时刻讲给对方。"},
+  {cat:"双人默契",r:4,duo:true,txt:"视频里玩你说我猜。"},
+  {cat:"双人默契",r:4,duo:true,txt:"互相考对方一个小问题，答对加分。"},
+  {cat:"双人默契",r:4,duo:true,txt:"一起回忆第一次认识的细节。"},
+  {cat:"双人默契",r:4,duo:true,txt:"视频里各讲一个对方的小缺点，然后夸回来。"},
+  {cat:"双人默契",r:4,duo:true,txt:"互相说出对方最近的一个小改变。"},
+  {cat:"双人默契",r:4,duo:true,txt:"一起给对方取一个专属新称呼。"},
+  {cat:"双人默契",r:4,duo:true,txt:"视频里玩剪刀石头布，五局三胜。"},
+  {cat:"双人默契",r:4,duo:true,txt:"互相问一个如果问题，诚实回答。"},
+  {cat:"双人默契",r:4,duo:true,txt:"一起列对方最懂我的三件事。"},
+  {cat:"双人默契",r:4,duo:true,txt:"视频里互相模仿对方的可爱动作。"},
+  {cat:"双人默契",r:4,duo:true,txt:"一起玩我说前五个字你接。"},
+  {cat:"双人默契",r:4,duo:true,txt:"互相讲一件对方做过最暖的事。"},
+  {cat:"双人默契",r:4,duo:true,txt:"视频里互相考你还记得我说过吗。"},
+  {cat:"双人默契",r:4,duo:true,txt:"一起制定一个只有你们懂的暗号。"},
+  {cat:"双人默契",r:4,duo:true,txt:"互相猜对方今天最想吃什么。"},
+  {cat:"双人默契",r:4,duo:true,txt:"视频里互相夸一句最具体的点。"},
+  {cat:"双人默契",r:4,duo:true,txt:"一起玩真心话，我先来。"},
+  {cat:"双人默契",r:4,duo:true,txt:"互相说出对方的一个闪光点。"},
+  {cat:"双人默契",r:4,duo:true,txt:"一起回忆一起去过的地方。"},
+  {cat:"双人默契",r:4,duo:true,txt:"视频里互相讲一个对方的小秘密。"},
+  {cat:"双人默契",r:4,duo:true,txt:"互相猜对方今晚几点睡。"},
+  {cat:"双人默契",r:4,duo:true,txt:"一起给对方起一个今天的新外号。"},
+  {cat:"双人默契",r:4,duo:true,txt:"视频里互相模仿对方发消息的样子。"},
+  {cat:"双人默契",r:4,duo:true,txt:"一起玩默契三连问。"},
+  {cat:"双人默契",r:4,duo:true,txt:"互相讲一件对方让你笑出声的事。"},
+  {cat:"双人默契",r:4,duo:true,txt:"视频里互相考一句对方说过的情话。"},
+  {cat:"双人默契",r:4,duo:true,txt:"一起列想一起去做的五件事。"},
+  {cat:"双人默契",r:4,duo:true,txt:"互相猜对方手机里最常用的表情包。"},
+  {cat:"双人默契",r:4,duo:true,txt:"视频里互相说一句今天谢谢你。"},
+  {cat:"双人默契",r:4,duo:true,txt:"一起玩谁更了解对方抢答。"},
+  {cat:"双人默契",r:4,duo:true,txt:"互相讲一件对方感动你的瞬间。"},
+  {cat:"双人默契",r:4,duo:true,txt:"视频里互相模仿对方的拍照姿势。"},
+  {cat:"双人默契",r:4,duo:true,txt:"一起给对方一个具体的夸夸。"},
+  {cat:"双人默契",r:4,duo:true,txt:"互相猜对方今天的心情值。"},
+  {cat:"双人默契",r:4,duo:true,txt:"一起玩互相出题小测验。"},
+  {cat:"双人默契",r:4,duo:true,txt:"互相说出对方最可爱的一个习惯。"},
+  {cat:"双人默契",r:4,duo:true,txt:"视频里互相讲一个童年的糗事。"},
+  {cat:"双人默契",r:4,duo:true,txt:"一起给对方编一句只有彼此懂的暗语。"},
+  {cat:"双人默契",r:4,duo:true,txt:"互相猜对方最喜欢你的一点。"},
+  {cat:"双人默契",r:4,duo:true,txt:"视频里互相考我上次夸你是什么时候。"},
+  {cat:"双人默契",r:4,duo:true,txt:"一起回忆最近一起追的剧和歌。"},
+  {cat:"双人默契",r:4,duo:true,txt:"互相讲一件想为对方做还没做的事。"},
+  {cat:"双人默契",r:4,duo:true,txt:"视频里互相说一个等你来的那天的计划。"},
+  {cat:"双人默契",r:4,duo:true,txt:"一起玩接歌词小游戏。"},
+  {cat:"双人默契",r:4,duo:true,txt:"互相猜对方此刻最想念什么。"},
+  {cat:"双人默契",r:4,duo:true,txt:"视频里互相给对方一个隔空击掌。"},
+  {cat:"双人默契",r:4,duo:true,txt:"一起给对方加油，说一句最想听的话。"},
+  {cat:"专属回忆卡",r:4,duo:false,txt:"还记得第一次聊天的话题吗？今晚讲给我听。"},
+  {cat:"专属回忆卡",r:4,duo:false,txt:"我们第一次说喜欢你，再回忆一遍。"},
+  {cat:"专属回忆卡",r:4,duo:false,txt:"讲一个只有我们懂的默契梗。"},
+  {cat:"专属回忆卡",r:4,duo:false,txt:"今天想起你说过最甜的一句话。"},
+  {cat:"专属回忆卡",r:4,duo:false,txt:"回忆一个我们一起笑到停不下来的时刻。"},
+  {cat:"专属回忆卡",r:4,duo:false,txt:"把你最想珍藏的一个瞬间写下来给我。"},
+  {cat:"专属回忆卡",r:4,duo:false,txt:"我们之间的小暗号，今晚对一对。"},
+  {cat:"专属回忆卡",r:4,duo:false,txt:"讲一件你为我做过我一直记得的事。"},
+  {cat:"专属回忆卡",r:4,duo:false,txt:"回忆我们第一次见面的细节。"},
+  {cat:"专属回忆卡",r:4,duo:false,txt:"今天把一首我们的歌再听一遍。"},
+  {cat:"专属回忆卡",r:4,duo:false,txt:"写下你最想对我说的一句心里话。"},
+  {cat:"专属回忆卡",r:4,duo:false,txt:"回忆一个你被我逗笑的瞬间。"},
+  {cat:"专属回忆卡",r:4,duo:false,txt:"我们约好要做的事，进度到哪了。"},
+  {cat:"专属回忆卡",r:4,duo:false,txt:"讲一个你的小秘密，我只告诉过我。"},
+  {cat:"专属回忆卡",r:4,duo:false,txt:"回忆你第一次给我发语音的样子。"},
+  {cat:"专属回忆卡",r:4,duo:false,txt:"把我们最开心的一张照片再翻出来。"},
+  {cat:"专属回忆卡",r:4,duo:false,txt:"讲一个你愿意为我改掉的小习惯。"},
+  {cat:"专属回忆卡",r:4,duo:false,txt:"回忆我们吵过又和好的那次。"},
+  {cat:"专属回忆卡",r:4,duo:false,txt:"写下遇见你之后我变好的地方。"},
+  {cat:"专属回忆卡",r:4,duo:false,txt:"回忆一个我们差点错过的小细节。"},
+  {cat:"专属回忆卡",r:4,duo:false,txt:"我们之间的一句口头禅，今晚再说一次。"},
+  {cat:"专属回忆卡",r:4,duo:false,txt:"讲一件你希望我们一直一起做的事。"},
+  {cat:"专属回忆卡",r:4,duo:false,txt:"回忆你第一次为我紧张的样子。"},
+  {cat:"专属回忆卡",r:4,duo:false,txt:"把我们的纪念日再认真记一遍。"},
+  {cat:"专属回忆卡",r:4,duo:false,txt:"讲一个你偷偷为我准备的小惊喜。"},
+  {cat:"专属回忆卡",r:4,duo:false,txt:"回忆我们异地时最想对方的一个瞬间。"},
+  {cat:"专属回忆卡",r:4,duo:false,txt:"写下你最喜欢我的一句话。"},
+  {cat:"专属回忆卡",r:4,duo:false,txt:"回忆我们第一次视频通话的画面。"},
+  {cat:"专属回忆卡",r:4,duo:false,txt:"讲一个只有你懂我别人不懂的时刻。"},
+  {cat:"专属回忆卡",r:4,duo:false,txt:"把我们说过要一起实现的愿望再念一遍。"},
+  {cat:"专属回忆卡",r:4,duo:false,txt:"回忆一次我们一起度过的普通却难忘的晚上。"},
+  {cat:"专属回忆卡",r:4,duo:false,txt:"写下等你来我们要做的第一件事。"},
+  {cat:"专属回忆卡",r:4,duo:false,txt:"讲一个你被我逗得脸红的瞬间。"},
+  {cat:"专属回忆卡",r:4,duo:false,txt:"回忆我们第一个共同完成的小事。"},
+  {cat:"专属回忆卡",r:4,duo:false,txt:"我们之间最长的通话，再提一次。"},
+  {cat:"专属回忆卡",r:4,duo:false,txt:"讲一个你希望我记住的关于你的细节。"},
+  {cat:"专属回忆卡",r:4,duo:false,txt:"回忆我们第一次互相取的外号。"},
+  {cat:"专属回忆卡",r:4,duo:false,txt:"写下今天为什么又更爱你了。"},
+  {cat:"专属回忆卡",r:4,duo:false,txt:"讲一个你藏了很久想告诉我的话。"},
+  {cat:"专属回忆卡",r:4,duo:false,txt:"回忆我们约定过的一个小承诺。"},
+  {cat:"专属回忆卡",r:4,duo:false,txt:"我们之间最暖的一句称呼，再喊一次。"},
+  {cat:"专属回忆卡",r:4,duo:false,txt:"讲一个你第一次觉得就是他了她的瞬间。"},
+  {cat:"专属回忆卡",r:4,duo:false,txt:"回忆我们一起看的第一部剧电影。"},
+  {cat:"专属回忆卡",r:4,duo:false,txt:"写下你希望我为你做的一件小事。"},
+  {cat:"专属回忆卡",r:4,duo:false,txt:"讲一个你觉得有你在真好的时刻。"},
+  {cat:"专属回忆卡",r:4,duo:false,txt:"回忆我们第一次互道晚安。"},
+  {cat:"心愿卡",r:4,duo:false,txt:"你想吃的东西，下次见面我陪你吃到饱。"},
+  {cat:"心愿卡",r:4,duo:false,txt:"你想去的地方，记进我们的清单。"},
+  {cat:"心愿卡",r:4,duo:false,txt:"你最近想要的东西，列入我的计划。"},
+  {cat:"心愿卡",r:4,duo:false,txt:"你许的心愿，我今晚先记下。"},
+  {cat:"心愿卡",r:4,duo:false,txt:"你想看的一部剧，我陪你一起追。"},
+  {cat:"心愿卡",r:4,duo:false,txt:"你想要的抱抱，先记一个账上。"},
+  {cat:"心愿卡",r:4,duo:false,txt:"你许的约会，我认真安排。"},
+  {cat:"心愿卡",r:4,duo:false,txt:"你想听的话，我现在就说给你听。"},
+  {cat:"心愿卡",r:4,duo:false,txt:"你的小愿望，我来帮你实现一半。"},
+  {cat:"心愿卡",r:4,duo:false,txt:"你想去的店，下次约会上线。"},
+  {cat:"心愿卡",r:4,duo:false,txt:"你心心念念的东西，我记下啦。"},
+  {cat:"心愿卡",r:4,duo:false,txt:"你许愿早睡，我陪你打卡。"},
+  {cat:"心愿卡",r:4,duo:false,txt:"你想说的话，我洗耳恭听。"},
+  {cat:"心愿卡",r:4,duo:false,txt:"你的心愿清单，正在逐一兑现。"},
+  {cat:"心愿卡",r:4,duo:false,txt:"你想吃的甜点，见面就安排。"},
+  {cat:"心愿卡",r:4,duo:false,txt:"你想买的，帮你挑好等下单。"},
+  {cat:"心愿卡",r:4,duo:false,txt:"你许愿多见面，我们一起努力。"},
+  {cat:"心愿卡",r:4,duo:false,txt:"你想去旅行的地方，列进计划。"},
+  {cat:"心愿卡",r:4,duo:false,txt:"你的小目标，我陪你坚持。"},
+  {cat:"心愿卡",r:4,duo:false,txt:"你想听我唱的歌，下次视频安排。"},
+  {cat:"心愿卡",r:4,duo:false,txt:"你想要的惊喜，正在路上。"},
+  {cat:"心愿卡",r:4,duo:false,txt:"你想放松的周末，我承包安排。"},
+  {cat:"心愿卡",r:4,duo:false,txt:"你许愿的事，我都放在心上。"},
+  {cat:"心愿卡",r:4,duo:false,txt:"你想看的演出，留意票。"},
+  {cat:"心愿卡",r:4,duo:false,txt:"你的心愿，先写进见面基金。"},
+  {cat:"心愿卡",r:4,duo:false,txt:"你想吃的那家店，记入下次行程。"},
+  {cat:"心愿卡",r:4,duo:false,txt:"你想要的一件小事，我这就记下。"},
+  {cat:"心愿卡",r:4,duo:false,txt:"你许的愿，我今晚替它加点糖。"},
+  {cat:"心愿卡",r:4,duo:false,txt:"你想去的地方，我说到做到。"},
+  {cat:"心愿卡",r:4,duo:false,txt:"你想看的风景，见面一起看。"},
+  {cat:"心愿卡",r:4,duo:false,txt:"你的心愿，从今晚开始兑现。"},
+  {cat:"心愿卡",r:4,duo:false,txt:"你想买的礼物，挑好了告诉我。"},
+  {cat:"心愿卡",r:4,duo:false,txt:"你许愿不熬夜，我陪你。"},
+  {cat:"心愿卡",r:4,duo:false,txt:"你想听的晚安，天天都有。"},
+  {cat:"心愿卡",r:4,duo:false,txt:"你的小心愿，我都想为你实现。"},
+  {cat:"心愿卡",r:4,duo:false,txt:"你想做的饭，见面一起做。"},
+  {cat:"心愿卡",r:4,duo:false,txt:"你许的愿，先存进我们的约定。"},
+  {cat:"心愿卡",r:4,duo:false,txt:"你想吃的水果，见面就买。"},
+  {cat:"心愿卡",r:4,duo:false,txt:"你的心愿卡，我一张张都收好。"},
+  {cat:"心愿卡",r:4,duo:false,txt:"你想去旅行，就定在下次见面后。"},
+  {cat:"心愿卡",r:4,duo:false,txt:"你想看的剧，我陪你看完。"},
+  {cat:"心愿卡",r:4,duo:false,txt:"你想要的小暖，安排上。"},
+  {cat:"心愿卡",r:4,duo:false,txt:"你许愿有人懂你，我一直都在。"},
+  {cat:"心愿卡",r:4,duo:false,txt:"你想说的话，慢慢说给我听。"},
+  {cat:"心愿卡",r:4,duo:false,txt:"你的心愿，是我想努力的方向。"},
+  {cat:"心愿卡",r:4,duo:false,txt:"你想去的地方，我陪你打卡。"},
+  {cat:"心愿卡",r:4,duo:false,txt:"你许的愿，我明天就去准备。"},
+  {cat:"心愿卡",r:4,duo:false,txt:"你的心愿，我记在这张卡里，等你验收。"},
+  {cat:"约会任务",r:3,duo:false,txt:"视频里互相说一件今天最想分享的小事。"},
+  {cat:"专属回忆卡",r:4,duo:false,txt:"回忆我们第一次一起看夜空的样子。"},
+  {cat:"专属回忆卡",r:4,duo:false,txt:"把我们说过最甜的一句承诺再温习一遍。"}
+];
+
+var col=[],streak=0,lastDate="",custom=[];
+var mode="solo",duoTurn=true,current=null,animating=false;
+
+function $id(s){return document.getElementById(s)}
+function load(){
+  try{var a=JSON.parse(localStorage.getItem(LS_COL));if(Array.isArray(a))col=a;}catch(e){}
+  try{var s=JSON.parse(localStorage.getItem(LS_STREAK));if(s&&typeof s.n==="number"){streak=s.n;lastDate=s.d;}}catch(e){}
+  try{var c=JSON.parse(localStorage.getItem(LS_CUSTOM));if(Array.isArray(c))custom=c;}catch(e){}
+  var today=ymd(new Date());
+  if(lastDate&&lastDate!==today){var gap=Math.round((new Date(today)-new Date(lastDate))/86400000);if(gap>1){streak=0;}}
+}
+function save(){try{localStorage.setItem(LS_COL,JSON.stringify(col))}catch(e){}}
+function saveStreak(){try{localStorage.setItem(LS_STREAK,JSON.stringify({n:streak,d:ymd(new Date())}))}catch(e){}}
+function saveCustom(){try{localStorage.setItem(LS_CUSTOM,JSON.stringify(custom))}catch(e){}}
+function ymd(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+function toast(msg){var t=$id("toast");t.textContent=msg;t.classList.add("show");clearTimeout(t._t);t._t=setTimeout(function(){t.classList.remove("show")},2200)}
+
+function wxText(code){
+  if(code===0)return "晴";
+  if(code<=2)return "多云";
+  if(code===3)return "阴";
+  if(code>=45&&code<=48)return "雾";
+  if(code>=51&&code<=67)return "雨";
+  if(code>=71&&code<=77)return "雪";
+  if(code>=80&&code<=82)return "阵雨";
+  if(code>=85&&code<=86)return "阵雪";
+  if(code>=95)return "雷阵雨";
+  return "天气";
+}
+function setWx(city,t,desc,care){
+  var c=$id("wxCity");if(c)c.textContent=city||"所在位置";
+  var ct=$id("wxTemp");if(ct)ct.textContent=t;
+  var cd=$id("wxDesc");if(cd)cd.textContent=desc;
+  var cw=$id("wxCare");if(cw)cw.textContent=care||"";
+}
+function careMsg(cw){
+  var t=cw.temperature,wd=cw.windspeed,code=cw.weathercode,parts=[];
+  if(t<=6){parts.push("今天很冷，记得多穿点、注意保暖");}
+  else if(t<=10){parts.push("今天有点冷，出门记得加件衣");}
+  else if(t<=18){parts.push("早晚有点凉，记得带件薄外套");}
+  else if(t>=32){parts.push("今天很热，注意防暑、别中暑");}
+  else if(t>=28){parts.push("今天有点热，注意防暑补水");}
+  if(wd>=30){parts.push("风有点大，出门注意防风");}
+  else if(wd>=18){parts.push("有点风，出门别被吹到");}
+  if(code>=71&&code<=77||code>=85&&code<=86){parts.push("今天有雪，注意保暖、走路防滑");}
+  else if(code>=51&&code<=67||code>=80&&code<=82){parts.push("今天有雨，出门记得带伞");}
+  else if(code>=95){parts.push("今天有雷雨，记得带伞、少出门");}
+  if(!parts.length)return "宝宝今天天气不错，记得好好照顾自己、多想我一点";
+  return "宝宝今天要注意："+parts.join("；");
+}
+function loadWeather(){
+  function fail(msg){setWx("定位未开启","--","",msg||"未能获取天气，记得照顾好自己");}
+  if(!navigator.geolocation){fail();return}
+  navigator.geolocation.getCurrentPosition(function(pos){
+    var lat=pos.coords.latitude.toFixed(4),lon=pos.coords.longitude.toFixed(4);
+    var wurl="https://api.open-meteo.com/v1/forecast?latitude="+lat+"&longitude="+lon+"&current_weather=true";
+    var gurl="https://api.bigdatacloud.net/data/reverse-geocode-client?latitude="+lat+"&longitude="+lon+"&localityLanguage=zh";
+    // 城市反查：失败自动重试，最多 3 次，避免偶发限流
+    function getCity(tryN){
+      tryN=tryN||1;
+      return fetch(gurl,{cache:"no-store"}).then(function(r){if(!r.ok)throw new Error(String(r.status));return r.json()})
+        .then(function(g){return g&&(g.city||g.locality||g.principalSubdivision)||""})
+        .catch(function(){return tryN<3?getCity(tryN+1):""})
+    }
+    Promise.all([
+      fetch(wurl).then(function(r){return r.json()}),
+      getCity().then(function(c){return c}, function(){return ""})
+    ]).then(function(rs){
+      var d=rs[0],city=rs[1],cw=d&&d.current_weather;
+      if(!cw){setWx(city||"","--","天气加载失败","");return}
+      var t=Math.round(cw.temperature),tx=wxText(cw.weathercode);
+      setWx(city,t,tx,careMsg(cw));
+    }).catch(function(){setWx("","--","天气加载失败","")});
+  },fail,{timeout:8000,maximumAge:600000});
+}
+function setDate(){var now=new Date(),days=["日","一","二","三","四","五","六"],s=(now.getMonth()+1)+"月"+now.getDate()+"日 · 周"+days[now.getDay()];$id("date").textContent=s;var wd=$id("wxDate");if(wd)wd.textContent=s;}
+function makeHearts(){
+  var host=$id("hearts"),n=window.innerWidth<600?14:22;
+  for(var i=0;i<n;i++){
+    var s=document.createElement("span");s.className="heart";
+    s.style.left=(Math.random()*100).toFixed(1)+"%";s.style.fontSize=(Math.random()*18+14).toFixed(1)+"px";
+    s.style.setProperty("--d",(Math.random()*7+8).toFixed(1)+"s");s.style.setProperty("--delay",(Math.random()*9).toFixed(1)+"s");
+    s.innerHTML='<svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" aria-hidden="true"><path d="M12 21s-6.5-4-9-8.5C1 8 4 5 7.5 5c2.2 0 4.5 1.5 4.5 3.2C12 6.5 14.3 5 16.5 5 20 5 23 8 21 12.5 18.5 17 12 21 12 21z"/></svg>';
+    host.appendChild(s);
+  }
+}
+
+function renderModes(){
+  var host=$id("modes");host.innerHTML="";
+  var opts=[{v:"solo",l:"很抱歉我不在你身边"},{v:"duo",l:"我们俩一起"}];
+  opts.forEach(function(o){
+    var b=document.createElement("button");b.type="button";b.className="modebtn"+(mode===o.v?" on":"");b.textContent=o.l;
+    b.addEventListener("click",function(){mode=o.v;renderModes();resetForMode()});host.appendChild(b);
+  });
+}
+function whoLabel(){return duoTurn?"她":"你"}
+function resetForMode(){
+  current=null;animating=false;
+  var card=$id("card");card.classList.remove("flip");
+  $id("rarityTag").classList.remove("hot");$id("rarityText").textContent="还没抽卡";$id("rarityTag").style.setProperty("--r",RARE_COLOR[1]);
+  $id("turn").textContent=mode==="duo"?"双人模式 · 到"+whoLabel()+"抽":"";
+  $id("drawBtn").textContent="抽一张";$id("drawBtn").disabled=false;
+}
+function poolNow(){return POOL.concat(custom).filter(function(c){return mode==="duo"?true:!c.duo})}
+function notDrawn(){var drawn={};col.forEach(function(c){drawn[c.txt]=1});return poolNow().filter(function(c){return !drawn[c.txt]})}
+function rollRarity(){
+  var tot=WEIGHT.reduce(function(a,b){return a+b},0),x=Math.random()*tot,acc=0;
+  for(var i=0;i<WEIGHT.length;i++){acc+=WEIGHT[i];if(x<acc)return i+1;}
+  return 4;
+}
+function drawCard(){
+  if(animating)return;animating=true;
+  var avail=notDrawn();
+  if(!avail.length){toast("卡册都翻完啦，去写一张新卡吧");animating=false;return;}
+  var r=rollRarity(),rpool=avail.filter(function(c){return c.r===r});
+  if(!rpool.length)rpool=avail;
+  var card=rpool[Math.floor(Math.random()*rpool.length)];
+  current=card;
+  var fc=RARE_COLOR[card.r];
+  $id("cardFront").style.setProperty("--fc",fc);
+  $id("cCat").textContent=card.cat;$id("cCat").style.color=fc;
+  $id("cWord").textContent=card.txt;
+  $id("cHint").textContent=card.src?("——"+card.src):"翻开啦 · 今天就由它做主";
+  var tag=$id("rarityTag");tag.style.setProperty("--r",fc);tag.classList.remove("hot");$id("rarityText").textContent="抽中："+RARE_NAME[card.r];
+  $id("drawBtn").disabled=true;$id("drawBtn").textContent="翻开中…";
+  var c=$id("card");c.classList.remove("flip");void c.offsetWidth;c.classList.add("flip");
+  clearTimeout(drawCard._t);drawCard._t=setTimeout(function(){afterFlip(card)},750);
+}
+function afterFlip(card){
+  animating=false;
+  $id("drawBtn").disabled=false;$id("drawBtn").textContent="再来一张";
+  var tag=$id("rarityTag");tag.classList.add("hot");$id("rarityText").textContent=RARE_NAME[card.r];
+  var today=ymd(new Date());
+  if(lastDate!==today){streak=lastDate?streak+1:1;lastDate=today;saveStreak();$id("streak").innerHTML="想你已经连续 <b>"+streak+"</b> 天";}
+  col.push({cat:card.cat,r:card.r,txt:card.txt,src:card.src||"",d:new Date().toLocaleDateString("zh-CN")});
+  save();renderGallery();
+  if(mode==="duo"){duoTurn=!duoTurn;$id("turn").textContent="双人模式 · 到"+whoLabel()+"抽";}
+  toast("翻开啦，这份惊喜归你");
+}
+$id("drawBtn").addEventListener("click",drawCard);
+$id("card").addEventListener("click",function(){if(!current)drawCard()});
+
+function renderGallery(){
+  $id("galCount").textContent=col.length+" / "+(POOL.length+custom.length);
+  var host=$id("gallery");host.innerHTML="";
+  $id("galEmpty").style.display=col.length?"none":"block";
+  col.slice().reverse().forEach(function(c){
+    var d=document.createElement("div");d.className="gcard";d.style.setProperty("--c",RARE_COLOR[c.r]);
+    var gt=document.createElement("div");gt.className="gt";gt.textContent=RARE_NAME[c.r]+" · "+c.cat;
+    var gn=document.createElement("div");gn.className="gn";gn.textContent=c.txt;
+    var gd=document.createElement("div");gd.className="gd";gd.textContent=(c.src?c.src+" · ":"")+c.d;
+    d.appendChild(gt);d.appendChild(gn);d.appendChild(gd);host.appendChild(d);
+  });
+}
+
+/* ===== 写一张卡 ===== */
+function fillWrite(){
+  var wc=$id("wCat"),wr=$id("wRar");
+  CAT_NAMES.forEach(function(c){var o=document.createElement("option");o.value=c;o.textContent=c;wc.appendChild(o)});
+  for(var i=1;i<=4;i++){var o=document.createElement("option");o.value=i;o.textContent=RARE_NAME[i];wr.appendChild(o);}
+}
+function addCustom(){
+  var inp=$id("wText"),t=inp.value.trim();
+  if(!t){toast("先写点内容吧");return}
+  var cat=$id("wCat").value,rr=parseInt($id("wRar").value,10);
+  if(col.some(function(c){return c.txt===t})){toast("这张已经在卡册里啦");return}
+  custom.push({cat:cat,r:rr,duo:cat==="双人默契",txt:t});
+  inp.value="";saveCustom();renderGallery();toast("写进卡册啦，等它被抽到");
+}
+$id("wAdd").addEventListener("click",addCustom);
+$id("wText").addEventListener("keydown",function(e){if(e.key==="Enter")addCustom()});
+
+load();setDate();makeHearts();loadWeather();renderModes();fillWrite();renderGallery();resetForMode();
+})();
+</script>
+</body>
+</html>
