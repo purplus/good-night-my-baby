@@ -40,14 +40,12 @@ header{display:flex;align-items:center;justify-content:space-between;padding:22p
 .eyebrow{display:inline-block;font-size:12px;letter-spacing:3px;color:var(--rose);border:1px solid var(--line);padding:5px 14px;border-radius:999px;margin-bottom:16px}
 .hero h1{font-size:38px;font-weight:900;line-height:1.25;letter-spacing:1px}
 .hero h1 .accent{color:var(--rose)}
-.hero .sub{margin:12px auto 14px;color:var(--muted);font-size:14px;max-width:360px}
-.wxcard{margin:18px 0 8px;text-align:center;background:linear-gradient(170deg,rgba(236,138,161,.12),rgba(232,164,77,.10));border:1px solid var(--line);border-radius:18px;padding:16px 16px 14px}
-.wx-head{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:4px}
-.wx-big{display:flex;align-items:baseline;justify-content:center;gap:7px}
-.wx-temp{font-family:"Noto Serif SC",serif;font-size:44px;font-weight:900;color:var(--ink);line-height:1.1}
-.wx-unit{font-size:20px;color:var(--muted)}
-.wx-desc{font-size:16px;color:var(--rose);font-weight:600}
-.wx-care{margin-top:12px;font-size:13px;color:var(--ink);background:var(--card);border:1px dashed var(--rose);border-radius:12px;padding:9px 12px}
+.hero .sub{margin:16px auto 14px;color:var(--muted);font-size:14px;max-width:360px}
+.hero .wxline{margin:18px auto 2px;font-size:15px;color:var(--muted);text-align:center}
+.hero .wxline .wx-sep{margin:0 7px;color:var(--dim)}
+.hero .wxline .wx-temp{color:var(--rose);font-weight:700}
+.hero .wxline .wx-desc{color:var(--rose);font-weight:600}
+.hero .wx-care{margin:12px auto 0;font-size:13px;color:var(--ink);background:var(--card);border:1px dashed var(--rose);border-radius:12px;padding:9px 12px;max-width:400px}
 
 .modes{display:flex;gap:10px;justify-content:center;margin-bottom:6px;flex-wrap:wrap}
 .modebtn{min-height:44px;padding:0 20px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--muted);font-size:13.5px;font-weight:600;transition:.18s}
@@ -100,7 +98,12 @@ header{display:flex;align-items:center;justify-content:space-between;padding:22p
 .section-head h2{font-size:19px;font-weight:700;letter-spacing:.5px}
 .section-head .hint{font-size:12px;color:var(--dim)}
 .gal-empty{color:var(--muted);text-align:center;font-size:14px;padding:24px 0;border:1px dashed var(--line);border-radius:16px}
-.gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+#gallery{display:block;margin-top:6px}
+.gsec{margin-bottom:22px}
+.gsec-hd{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px;border-bottom:1px solid var(--line);padding-bottom:6px}
+.gsec-hd .gsec-name{font-size:14px;font-weight:700;color:var(--ink)}
+.gsec-hd .gsec-n{font-size:12px;color:var(--rose);font-weight:700}
+.gsec-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .gcard{aspect-ratio:3/4;border-radius:14px;padding:12px;display:flex;flex-direction:column;justify-content:space-between;
   border:1px solid var(--line);background:var(--card);position:relative;overflow:hidden}
 .gcard::before{content:"";position:absolute;inset:0 0 auto;height:3px;background:var(--c,#c19a5a)}
@@ -124,7 +127,7 @@ footer{text-align:center;padding:36px 0 6px;color:var(--dim);font-size:13px;line
 @media (min-width:768px){
   .hero h1{font-size:48px}
   .hero .sub{max-width:420px}
-  .gallery{grid-template-columns:repeat(4,1fr)}
+  .gsec-grid{grid-template-columns:repeat(4,1fr)}
   .write input{flex:1 1 60%}
 }
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
@@ -136,25 +139,20 @@ footer{text-align:center;padding:36px 0 6px;color:var(--dim);font-size:13px;line
 
 <div class="wrap">
 
-  <!-- ===== 天气（最先展示） ===== -->
-  <section class="wxcard">
-    <div class="wx-head"><span id="wxCity">正在定位…</span><span id="wxDate"></span></div>
-    <div class="wx-big">
-      <span class="wx-temp" id="wxTemp">--</span><span class="wx-unit">℃</span>
-      <span class="wx-desc" id="wxDesc">加载中</span>
-    </div>
-    <div class="wx-care" id="wxCare">正在分析今天的天气…</div>
-  </section>
-
   <header>
     <div class="brand"><span class="dot"></span><b>今天抽一张</b></div>
-    <div class="date" id="date"></div>
   </header>
 
   <section class="hero">
     <span class="eyebrow">给你的晚安小惊喜</span>
     <h1 class="serif">宝宝，今天<br>想我<span class="accent">了吗</span>？</h1>
-    <p class="sub">抽一张卡吧，让今天多一份想你的证据。内置 500 张，365 天不重样。</p>
+    <div class="wxline">
+      <span id="wxDate"></span><span class="wx-sep">·</span>
+      <span id="wxCity">正在定位…</span><span class="wx-sep">·</span>
+      <span class="wx-temp" id="wxTemp">--</span>℃ <span class="wx-desc" id="wxDesc">加载中</span>
+    </div>
+    <div class="wx-care" id="wxCare">正在分析今天的天气…</div>
+    <p class="sub">抽一张卡吧，让今天多一份想你的证据。</p>
     <div class="modes" id="modes"></div>
     <div class="streak" id="streak">想你已经连续 <b>0</b> 天</div>
   </section>
@@ -210,7 +208,7 @@ footer{text-align:center;padding:36px 0 6px;color:var(--dim);font-size:13px;line
   <section class="section">
     <div class="section-head">
       <h2>想你的小卡册</h2>
-      <span class="hint" id="galCount">0 / 500</span>
+      <span class="hint" id="galCount">已收集 0 张</span>
     </div>
     <div class="gal-empty" id="galEmpty">还没有翻开的卡片，抽一张，它就会住进这里。</div>
     <div class="gallery" id="gallery"></div>
@@ -243,7 +241,7 @@ var RARE_NAME={1:"普通",2:"稀有",3:"史诗",4:"传说"};
 var RARE_COLOR={1:"#c19a5a",2:"#ec8a5e",3:"#e0a047",4:"#e87c93"};
 var WEIGHT=[18,30,32,20]; // r1:r2:r3:r4
 
-/* 内置 500 张（含影视/古诗/名著名句情话） */
+/* 卡池：情话取自影视/古诗/名著名句 */
 var POOL=[
   {cat:"情话",r:1,duo:false,src:"电影《大话西游》",txt:"如果非要给这份爱加上一个期限，我希望是一万年。"},
   {cat:"情话",r:1,duo:false,src:"电影《情书》",txt:"你好吗？我很好。"},
@@ -822,7 +820,7 @@ function loadWeather(){
     }).catch(function(){setWx("","--","天气加载失败","")});
   },fail,{timeout:8000,maximumAge:600000});
 }
-function setDate(){var now=new Date(),days=["日","一","二","三","四","五","六"],s=(now.getMonth()+1)+"月"+now.getDate()+"日 · 周"+days[now.getDay()];$id("date").textContent=s;var wd=$id("wxDate");if(wd)wd.textContent=s;}
+function setDate(){var now=new Date(),days=["日","一","二","三","四","五","六"],s=(now.getMonth()+1)+"月"+now.getDate()+"日 · 周"+days[now.getDay()];var wd=$id("wxDate");if(wd)wd.textContent=s;}
 function makeHearts(){
   var host=$id("hearts"),n=window.innerWidth<600?14:22;
   for(var i=0;i<n;i++){
@@ -890,15 +888,29 @@ $id("drawBtn").addEventListener("click",drawCard);
 $id("card").addEventListener("click",function(){if(!current)drawCard()});
 
 function renderGallery(){
-  $id("galCount").textContent=col.length+" / "+(POOL.length+custom.length);
+  var n=col.length;
+  $id("galCount").textContent="已收集 "+n+" 张";
   var host=$id("gallery");host.innerHTML="";
-  $id("galEmpty").style.display=col.length?"none":"block";
-  col.slice().reverse().forEach(function(c){
-    var d=document.createElement("div");d.className="gcard";d.style.setProperty("--c",RARE_COLOR[c.r]);
-    var gt=document.createElement("div");gt.className="gt";gt.textContent=RARE_NAME[c.r]+" · "+c.cat;
-    var gn=document.createElement("div");gn.className="gn";gn.textContent=c.txt;
-    var gd=document.createElement("div");gd.className="gd";gd.textContent=(c.src?c.src+" · ":"")+c.d;
-    d.appendChild(gt);d.appendChild(gn);d.appendChild(gd);host.appendChild(d);
+  $id("galEmpty").style.display=n?"none":"block";
+  if(!n)return;
+  var by={};CAT_NAMES.forEach(function(c){by[c]=[]});
+  col.slice().reverse().forEach(function(c){if(by[c.cat])by[c.cat].push(c);else by[c.cat]=[c];});
+  CAT_NAMES.forEach(function(cat){
+    var list=by[cat];if(!list.length)return;
+    var sec=document.createElement("div");sec.className="gsec";
+    var hd=document.createElement("div");hd.className="gsec-hd";
+    var nm=document.createElement("span");nm.className="gsec-name";nm.textContent=cat;
+    var cnt=document.createElement("span");cnt.className="gsec-n";cnt.textContent=list.length+" 张";
+    hd.appendChild(nm);hd.appendChild(cnt);sec.appendChild(hd);
+    var grid=document.createElement("div");grid.className="gsec-grid";
+    list.forEach(function(c){
+      var d=document.createElement("div");d.className="gcard";d.style.setProperty("--c",RARE_COLOR[c.r]);
+      var gt=document.createElement("div");gt.className="gt";gt.textContent=RARE_NAME[c.r];
+      var gn=document.createElement("div");gn.className="gn";gn.textContent=c.txt;
+      var gd=document.createElement("div");gd.className="gd";gd.textContent=(c.src?c.src+" · ":"")+c.d;
+      d.appendChild(gt);d.appendChild(gn);d.appendChild(gd);grid.appendChild(d);
+    });
+    sec.appendChild(grid);host.appendChild(sec);
   });
 }
 
