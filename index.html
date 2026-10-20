@@ -142,6 +142,21 @@ footer{text-align:center;padding:36px 0 6px;color:var(--dim);font-size:13px;line
 .greet-line{margin:10px auto 20px;color:var(--muted);font-size:14px;line-height:1.7;max-width:250px}
 .greet-btn{min-height:46px;padding:0 28px;border-radius:999px;background:var(--rose);color:#fff;font-weight:600;font-size:15px;box-shadow:0 8px 20px rgba(236,138,161,.3)}
 
+.auth-overlay{position:fixed;inset:0;z-index:40;display:flex;align-items:center;justify-content:center;padding:24px;background:
+  radial-gradient(520px 360px at 78% -6%, rgba(236,138,161,.25), transparent 62%),
+  radial-gradient(460px 320px at -6% 30%, rgba(232,164,77,.20), transparent 55%),
+  linear-gradient(180deg,var(--bg1),var(--bg2))}
+.auth-overlay.hidden{display:none}
+.auth-card{width:min(380px,100%);background:var(--card);border:1px solid var(--line);border-radius:22px;padding:32px 26px;text-align:center;box-shadow:0 24px 60px rgba(155,110,70,.22)}
+.auth-card svg{margin:0 auto 10px}
+.auth-title{font-size:26px;font-weight:700;color:var(--ink)}
+.auth-sub{margin:10px auto 22px;color:var(--muted);font-size:14px;line-height:1.7;max-width:280px}
+.auth-in{width:100%;min-height:48px;border:1px solid var(--line);border-radius:14px;background:#fff;padding:0 14px;font-size:16px;margin-bottom:12px;color:var(--ink);outline:none}
+.auth-in:focus{border-color:var(--rose)}
+.auth-err{min-height:20px;font-size:13px;color:#d9534f;margin:2px 0 10px;line-height:1.5}
+.auth-btn{width:100%;min-height:48px;border-radius:14px;background:var(--rose);color:#fff;font-weight:600;font-size:16px;box-shadow:0 10px 24px rgba(236,138,161,.3)}
+.auth-link{width:100%;margin-top:14px;color:var(--rose);font-size:14px;font-weight:600}
+
 @media (min-width:768px){
   .hero h1{font-size:clamp(34px,6.8vw,52px)}
   .hero .sub{max-width:420px}
@@ -248,12 +263,30 @@ footer{text-align:center;padding:36px 0 6px;color:var(--dim);font-size:13px;line
   </div>
 </div>
 
+<!-- ===== 登录遮罩 ===== -->
+<div class="auth-overlay" id="authOverlay">
+  <div class="auth-card">
+    <svg viewBox="0 0 24 24" width="38" height="38" fill="var(--rose)" aria-hidden="true"><path d="M12 21s-6.5-4-9-8.5C1 8 4 5 7.5 5c2.2 0 4.5 1.5 4.5 3.2C12 6.5 14.3 5 16.5 5 20 5 23 8 21 12.5 18.5 17 12 21 12 21z"/></svg>
+    <div class="auth-title serif">今天抽一张</div>
+    <div class="auth-sub">登录后，你的小卡册会在云端好好保管，换设备也不丢。</div>
+    <input class="auth-in" id="authEmail" type="email" placeholder="邮箱" autocomplete="email">
+    <input class="auth-in" id="authPass" type="password" placeholder="密码（至少 6 位）" autocomplete="current-password">
+    <div class="auth-err" id="authErr"></div>
+    <button class="btn btn-primary auth-btn" id="authLogin" type="button">登 录</button>
+    <button class="btn auth-link" id="authSwitch" type="button">没有账号？注册一个</button>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+
 <script>
 (function(){
 "use strict";
 var LS_COL="wanwan_draw_col_v1";
 var LS_STREAK="wanwan_draw_streak_v1";
 var LS_CUSTOM="wanwan_custom_v1";
+var SUPA_URL="https://ejmwlqzvvldekbpgdvvg.supabase.co";
+var SUPA_PUB="sb_publishable_4h5CicHT-S1nQQKNFv9Ssg_joc-QO0E";
 
 var CAT_NAMES=["情话","哄睡卡","小惊喜","夸夸卡","约会任务","打卡小习惯","双人默契","专属回忆卡","心愿卡"];
 var RARE_NAME={1:"普通",2:"稀有",3:"史诗",4:"传说"};
@@ -766,6 +799,7 @@ var POOL=[
 
 var col=[],streak=0,lastDate="",custom=[];
 var mode="solo",duoTurn=true,current=null,animating=false;
+var DB=null,USER=null,authMode="login";
 
 function $id(s){return document.getElementById(s)}
 function load(){
@@ -775,9 +809,9 @@ function load(){
   var today=ymd(new Date());
   if(lastDate&&lastDate!==today){var gap=Math.round((new Date(today)-new Date(lastDate))/86400000);if(gap>1){streak=0;}}
 }
-function save(){try{localStorage.setItem(LS_COL,JSON.stringify(col))}catch(e){}}
-function saveStreak(){try{localStorage.setItem(LS_STREAK,JSON.stringify({n:streak,d:ymd(new Date())}))}catch(e){}}
-function saveCustom(){try{localStorage.setItem(LS_CUSTOM,JSON.stringify(custom))}catch(e){}}
+function save(){try{localStorage.setItem(LS_COL,JSON.stringify(col))}catch(e){}syncCloud()}
+function saveStreak(){try{localStorage.setItem(LS_STREAK,JSON.stringify({n:streak,d:ymd(new Date())}))}catch(e){}syncCloud()}
+function saveCustom(){try{localStorage.setItem(LS_CUSTOM,JSON.stringify(custom))}catch(e){}syncCloud()}
 function ymd(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
 function toast(msg){var t=$id("toast");t.textContent=msg;t.classList.add("show");clearTimeout(t._t);t._t=setTimeout(function(){t.classList.remove("show")},2200)}
 
@@ -1058,7 +1092,80 @@ function greetNow(){
 }
 $id("greetClose").addEventListener("click",function(){$id("greetMask").classList.remove("show")});
 
-load();setDate();makeHearts();loadWeather();renderModes();fillWrite();renderGallery();resetForMode();greetNow();
+/* ===== 登录 + 云端同步 ===== */
+function syncCloud(){
+  if(!USER||!DB)return Promise.resolve();
+  return DB.from("wanwan_data").upsert({
+    user_id:USER.id,streak_n:streak,streak_d:lastDate,col:col,custom:custom,updated_at:new Date().toISOString()
+  },{onConflict:"user_id"}).then(function(r){if(r.error)console.error("sync",r.error)});
+}
+function mergeCards(a,b){ // a=cloud,b=local，按文案去重合并
+  var seen={},out=[];
+  [].concat(a,b).forEach(function(c){var k=c.txt+(c.src?"|"+c.src:"");if(!seen[k]){seen[k]=1;out.push(c)}});
+  return out;
+}
+function loadCloud(){
+  if(!USER||!DB)return Promise.resolve();
+  return DB.from("wanwan_data").select("*").eq("user_id",USER.id).maybeSingle().then(function(r){
+    var row=r.data||{},cloudCol=Array.isArray(row.col)?row.col:[],cloudCustom=Array.isArray(row.custom)?row.custom:[];
+    var cs={n:row.streak_n||0,d:row.streak_d||""};
+    var lc=[],lc2=[],ls={n:0,d:""};
+    try{lc=JSON.parse(localStorage.getItem(LS_COL)||"[]")}catch(e){}
+    try{lc2=JSON.parse(localStorage.getItem(LS_CUSTOM)||"[]")}catch(e){}
+    try{var x=JSON.parse(localStorage.getItem(LS_STREAK)||"null");if(x&&typeof x.n==="number")ls={n:x.n,d:x.d};}catch(e){}
+    col=mergeCards(cloudCol,lc);
+    custom=mergeCards(cloudCustom,lc2);
+    if(cs.n>=ls.n){streak=cs.n;lastDate=cs.d;}else{streak=ls.n;lastDate=ls.d;}
+    save();saveStreak();saveCustom();
+  }).catch(function(e){console.error("loadCloud",e)});
+}
+function renderAll(){
+  renderGallery();
+  $id("streak").innerHTML="想你已经连续 <b>"+streak+"</b> 天";
+  renderModes();resetForMode();
+}
+function enterApp(u){
+  USER=u;USER.id=u.id;
+  $id("authOverlay").classList.add("hidden");
+  document.body.style.overflow="";
+  loadWeather();
+  loadCloud().then(function(){renderAll();greetNow()});
+}
+function showLogin(){
+  $id("authOverlay").classList.remove("hidden");
+  document.body.style.overflow="hidden";
+}
+function initAuth(){
+  if(!window.supabase){showLogin();return}
+  DB=window.supabase.createClient(SUPA_URL,SUPA_PUB);
+  DB.auth.getSession().then(function(r){
+    var u=r.data&&r.data.session&&r.data.session.user;
+    if(u)enterApp(u);else showLogin();
+  }).catch(showLogin);
+}
+function authErr(msg){var e=$id("authErr");if(e)e.textContent=msg||""}
+$id("authLogin").addEventListener("click",function(){
+  var em=$id("authEmail").value.trim(),pw=$id("authPass").value;
+  if(!em||!pw){authErr("请填邮箱和密码");return}
+  if(pw.length<6){authErr("密码至少 6 位");return}
+  authErr();var btn=$id("authLogin");btn.disabled=true;btn.textContent=authMode==="login"?"登录中…":"注册中…";
+  var act=authMode==="login"?DB.auth.signInWithPassword({email:em,password:pw}):DB.auth.signUp({email:em,password:pw});
+  act.then(function(r){
+    btn.disabled=false;btn.textContent=authMode==="login"?"登 录":"注 册";
+    if(r.error){authErr(r.error.message||"出错了，再试试");return}
+    var u=r.data&&(r.data.session&&r.data.session.user||r.data.user);
+    if(u){enterApp(u);}else{authErr("注册成功，请到邮箱点确认链接后登录");switchAuth();}
+  }).catch(function(e){btn.disabled=false;btn.textContent=authMode==="login"?"登 录":"注 册";authErr("网络错误，再试试")});
+});
+$id("authSwitch").addEventListener("click",switchAuth);
+function switchAuth(){
+  authMode=authMode==="login"?"signup":"login";
+  $id("authSwitch").textContent=authMode==="login"?"没有账号？注册一个":"已有账号？去登录";
+  $id("authLogin").textContent=authMode==="login"?"登 录":"注 册";
+  authErr("");
+}
+
+load();setDate();makeHearts();renderModes();fillWrite();renderGallery();resetForMode();initAuth();
 })();
 </script>
 </body>
