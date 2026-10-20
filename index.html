@@ -112,6 +112,15 @@ footer{text-align:center;padding:36px 0 6px;color:var(--dim);font-size:13px;line
 .toast{position:fixed;left:50%;bottom:34px;transform:translate(-50%,20px);background:#fff;border:1px solid var(--line);color:var(--ink);padding:12px 22px;border-radius:999px;font-size:14px;opacity:0;pointer-events:none;transition:.3s;z-index:9;box-shadow:0 8px 24px rgba(0,0,0,.12)}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 
+.greet-mask{position:fixed;inset:0;z-index:30;display:flex;align-items:center;justify-content:center;background:rgba(91,70,56,.35);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);opacity:0;pointer-events:none;transition:opacity .35s}
+.greet-mask.show{opacity:1;pointer-events:auto}
+.greet-card{width:min(330px,84vw);background:linear-gradient(170deg,var(--card2),var(--card));border-radius:22px;padding:30px 24px 24px;text-align:center;box-shadow:0 22px 54px rgba(155,110,70,.30);transform:translateY(12px);transition:transform .35s}
+.greet-mask.show .greet-card{transform:translateY(0)}
+.greet-heart{margin:0 auto 12px;color:var(--rose)}
+.greet-title{font-family:"Noto Serif SC",serif;font-size:27px;font-weight:700;color:var(--ink)}
+.greet-line{margin:10px auto 20px;color:var(--muted);font-size:14px;line-height:1.7;max-width:250px}
+.greet-btn{min-height:46px;padding:0 28px;border-radius:999px;background:var(--rose);color:#fff;font-weight:600;font-size:15px;box-shadow:0 8px 20px rgba(236,138,161,.3)}
+
 @media (min-width:768px){
   .hero h1{font-size:48px}
   .hero .sub{max-width:420px}
@@ -211,6 +220,16 @@ footer{text-align:center;padding:36px 0 6px;color:var(--dim);font-size:13px;line
 </div>
 
 <div class="toast" id="toast"></div>
+
+<!-- ===== 按时段问候弹窗 ===== -->
+<div class="greet-mask" id="greetMask" role="dialog" aria-modal="true">
+  <div class="greet-card">
+    <svg class="greet-heart" viewBox="0 0 24 24" width="34" height="34" fill="currentColor" aria-hidden="true"><path d="M12 21s-6.5-4-9-8.5C1 8 4 5 7.5 5c2.2 0 4.5 1.5 4.5 3.2C12 6.5 14.3 5 16.5 5 20 5 23 8 21 12.5 18.5 17 12 21 12 21z"/></svg>
+    <div class="greet-title" id="greetTitle"></div>
+    <div class="greet-line" id="greetLine"></div>
+    <button class="greet-btn" id="greetClose" type="button">开始抽卡</button>
+  </div>
+</div>
 
 <script>
 (function(){
@@ -924,7 +943,21 @@ function importData(){
 $id("bkOut").addEventListener("click",exportData);
 $id("bkIn").addEventListener("click",importData);
 
-load();setDate();makeHearts();loadWeather();renderModes();fillWrite();renderGallery();resetForMode();
+/* ===== 按时段问候 ===== */
+function greetNow(){
+  var h=new Date().getHours(),t="",line="";
+  if(h>=5&&h<11){t="早上好";line="新的一天，醒来的第一件事就是想你。";}
+  else if(h>=11&&h<13){t="中午好";line="到饭点了，记得好好吃饭，别饿着自己。";}
+  else if(h>=13&&h<17){t="下午好";line="午后的阳光和我的想念一样暖。";}
+  else if(h>=17&&h<23){t="晚上好";line="累了一天，抽张卡放松一下吧。";}
+  else {t="夜深了";line="这么晚还没睡？是不是在想我。";}
+  $id("greetTitle").textContent=t+"，宝宝";
+  $id("greetLine").textContent=line;
+  requestAnimationFrame(function(){$id("greetMask").classList.add("show")});
+}
+$id("greetClose").addEventListener("click",function(){$id("greetMask").classList.remove("show")});
+
+load();setDate();makeHearts();loadWeather();renderModes();fillWrite();renderGallery();resetForMode();greetNow();
 })();
 </script>
 </body>
